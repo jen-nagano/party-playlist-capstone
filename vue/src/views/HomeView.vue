@@ -4,6 +4,7 @@
     <p>You must be authenticated to see this</p>
     <router-link class="btn btn-submit" :to="{ name: 'event' }">Create Event</router-link>
     <p>{{ trackInfo.name }}</p>
+    <img width="200" v-bind:src="coverImgUrl"/>
     <!--<p>By: {{ trackInfo.artists[0].name }}</p> -->
     <form v-on:submit.prevent="getTrack()" class="cardForm">
       <div class="form-group">
@@ -25,7 +26,8 @@ export default {
   data() {
     return {
       trackId:'',
-      trackInfo: {}
+      trackInfo: {},
+      coverImgUrl:''
     }
   },
   methods: {
@@ -33,6 +35,8 @@ export default {
       SpotifyService.getTrack(this.trackId)
         .then(response => {
           this.trackInfo = response.data;
+          this.coverImgUrl = this.trackInfo.album.images[0].url;
+          console.log(this.trackInfo);
         })
     }
   }

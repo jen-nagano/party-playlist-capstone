@@ -4,7 +4,7 @@ const http = axios.create({
   baseURL: 'https:api.spotify.com/v1'
 });
 
-const token = 'BQAlAZX9DptLoREsWF8zdFhvRxZs1sZU-8b9-IGeqptiQuYNaiYI6JH2TCD_TET4srdQ4dKMNVoxzlnJwF1ebDOMsotl80NmdS9JeIXYAqWFJLA8PPM'; // Replace with your actual token
+const token = 'BQCiL30pB_4lveBb_hYkM-JCjaWNLjyEPNGi-0nxASb0V8mSTGsEqyKWhcEln5zwSmNdjYeTkY5nsTS67fMZ1xC9BII6szIju9RAIHGmmGIz5CPqpZo'; // Replace with your actual token
 http.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
 export default {

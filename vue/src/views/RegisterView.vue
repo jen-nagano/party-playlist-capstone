@@ -44,6 +44,15 @@ export default {
       if (this.user.password != this.user.confirmPassword) {
         this.registrationErrors = true;
         this.registrationErrorMsg = 'Password & Confirm Password do not match.';
+      } else if (this.user.password.length < 8 ||
+                  !/[^a-zA-Z0-9]/.test(password) ){
+          const lowerLetterRegex = /[^a-z]/;
+          const upperLetterRegex = /[^A-Z]/
+          const digitRegex = /[^0-9]/;
+          const specialCharRegex = /[^a-zA-Z0-9]/;
+          this.registrationErrors = true;
+          this.registrationErrorMsg = 'Invalid password. Must contain a special character.';
+
       } else {
         authService
           .register(this.user)

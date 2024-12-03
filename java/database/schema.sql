@@ -1,7 +1,11 @@
 BEGIN TRANSACTION;
 
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS events;
+DROP TABLE IF EXISTS event;
+DROP TABLE IF EXISTS song_playlist;
+DROP TABLE IF EXISTS event_playlist;
+DROP TABLE IF EXISTS song;
+DROP TABLE IF EXISTS playlist;
 
 CREATE TABLE users (
 	user_id SERIAL,
@@ -13,13 +17,50 @@ CREATE TABLE users (
 
 CREATE TABLE event (
 	event_id SERIAL,
-	name text NOT NULL,
+	name TEXT NOT NULL,
 	date DATE NOT NULL,
 	start_time TIMESTAMPTZ,
 	end_time TIMESTAMPTZ,
 	creator INTEGER,
 	CONSTRAINT PK_event PRIMARY KEY (event_id),
-	CONSTRAINT fk_creator FOREIGN KEY (creator) REFERENCES users(user_id)
+	CONSTRAINT FK_creator FOREIGN KEY (creator) REFERENCES users(user_id)
+);
+
+CREATE TABLE playlist (
+    playlist_id SERIAL,
+    name TEXT,
+    user_id INTEGER,
+    CONSTRAINT PK_playlist PRIMARY KEY (playlist_id),
+    CONSTRAINT FK_user_id FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE song (
+    song_id SERIAL,
+    title TEXT,
+    artist TEXT,
+    spotify_id VARCHAR(30),
+    CONSTRAINT PK_song PRIMARY KEY (song_id)
+);
+
+CREATE TABLE song_playlist (
+    sp_id SERIAL,
+    playlist_id INTEGER,
+    song_id INTEGER,
+    position INTEGER,
+    up_vote INTEGER,
+    down_vote INTEGER,
+    CONSTRAINT PK_song_playlist PRIMARY KEY (sp_id),
+    CONSTRAINT FK_playlist_id FOREIGN KEY (playlist_id) REFERENCES playlist(playlist_id),
+    CONSTRAINT FK_song_id FOREIGN KEY (song_id) REFERENCES song(song_id)
+);
+
+CREATE TABLE event_playlist (
+    ep_id SERIAL,
+    playlist_id INTEGER,
+    event_id INTEGER,
+    CONSTRAINT PK_event_playlist PRIMARY KEY (ep_id),
+    CONSTRAINT FK_event_playlist_id FOREIGN KEY (playlist_id) REFERENCES playlist(playlist_id),
+    CONSTRAINT FK_playlist_event_id FOREIGN KEY (event_id) REFERENCES event(event_id)
 );
 
 COMMIT TRANSACTION;

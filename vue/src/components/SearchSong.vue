@@ -16,7 +16,8 @@
       <ul v-if="searchResults.length">
         <li v-for="track in searchResults" :key="track.id">
             <img :src="track.album.images[0]?.url" alt="Album cover" width="50" />
-            {{ track.name }} by {{ track.artists[0].name }}
+            {{ track.name }} by {{ track.artists[0].name }} <br/>
+            Duration: {{ displayDuration(track.duration_ms) }}
             <button>Add to Playlist</button>
         </li>
       </ul>
@@ -41,7 +42,15 @@
           .catch(error => {
             console.error('Error searching track:', error);
           });
-      }
+      },
+      displayDuration(duration) {
+            let totalSeconds = Math.round(duration/1000);
+            console.log(totalSeconds);
+            let minutes = Math.floor(totalSeconds / 60);
+            let seconds = totalSeconds - minutes * 60;
+            let displayTime = minutes + ":" + seconds;
+            return displayTime;
+        }
     }
   };
   </script>

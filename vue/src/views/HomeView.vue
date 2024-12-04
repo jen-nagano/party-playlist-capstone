@@ -1,29 +1,207 @@
 <template>
   <div class="home">
-    <h1>Home</h1>
-    <p>Welcome to the Panda Party!</p>
-    <router-link class="btn btn-submit" :to="{ name: 'event' }">Create Event</router-link>
-    
+    <!-- Banner Section -->
+    <div class="banner">
+      <h1 class="banner-title"></h1>
+    </div>
+
+
+    <!-- Main Content -->
+    <div class="content">
+      <!-- Welcome Message -->
+      <p class="welcome-message">Welcome to the Panda Party!</p>
+     
+      <!-- Create Event Header -->
+      <h2 class="create-event-header">Create Event</h2>
+
+
+      <!-- Create Event Button (Styled as a Panel with Plus Sign) -->
+      <router-link class="btn-create-event" :to="{ name: 'event' }">
+        <span class="plus-sign">+</span>
+      </router-link>
+    </div>
   </div>
 </template>
-<script>
 
+
+<script>
 export default {
   data() {
-    return {
-
-    };
+    return {};
   },
-  methods: {
-   
-  }
+  methods: {}
 };
 </script>
+
+
 <style scoped>
+/* Importing a fun font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+
+/* Body Layout */
 .home {
+  font-family: 'Poppins', sans-serif;
+  margin-top: 60px;  /* Adjusted to avoid overlap with navbar */
+}
+
+
+/* Banner Section */
+.banner {
+  width: 100%;
+  height: 350px;   /* Increase the height of the banner to give more space */
+  background-image: url('/src/img/home.png'); /* Your banner image path */
+  background-size: cover;
+  background-position: top center;  /* This keeps the top part of the image visible */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+  padding-top: 60px; /* Adjust to avoid overlap with navbar, can be fine-tuned */
+}
+
+
+.banner-title {
+  font-size: 3rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Optional text shadow */
+  color: #8e44ad; /* Purple color */
+  animation: pulseGlow 1.5s ease-in-out infinite;
+}
+
+
+/* Main Content Styling */
+.content {
+  text-align: center;
   padding: 20px;
 }
-.cardForm {
-  margin-bottom: 20px;
+
+
+/* Welcome Message Styling */
+.welcome-message {
+  font-size: 3rem; /* Larger font size */
+  font-weight: bold; /* Bold text */
+  color: #8e44ad; /* Purple color */
+  margin-top: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  animation: pulseGlow 1.5s ease-in-out infinite;
+}
+
+
+/* Header for Create Event */
+.create-event-header {
+  font-size: 2.5rem;
+  color: #8e44ad; /* Purple color */
+  margin-top: 30px;
+  font-weight: bold;
+}
+
+
+/* Button Styling for "Create Event" (Styled as a Panel with Plus Sign) */
+.btn-create-event {
+  display: inline-block;
+  background-color: #9b59b6;  /* Purple background color */
+  color: white;
+  padding: 60px 80px;  /* Increased padding to make the button 2x bigger */
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 3rem;  /* Increased font size for larger button */
+  text-align: center;
+  margin-top: 30px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  animation: glowEffect 1.5s ease-in-out infinite;
+}
+
+
+.btn-create-event:hover {
+  background-color: #8e44ad;  /* Darker purple on hover */
+  transform: scale(1.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+
+.plus-sign {
+  font-size: 5rem;  /* Increased plus sign size for bigger button */
+  margin-right: 10px;
+  font-weight: bold;
+  animation: bouncePlus 1s infinite;
+}
+
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .banner {
+    height: 250px; /* Adjust the height for mobile to ensure the top of the image is visible */
+  }
+
+
+  .banner-title {
+    font-size: 2rem; /* Smaller title for mobile */
+  }
+
+
+  .welcome-message {
+    font-size: 2rem; /* Smaller welcome text on mobile */
+  }
+
+
+  .create-event-header {
+    font-size: 2rem; /* Smaller header on mobile */
+  }
+
+
+  .btn-create-event {
+    font-size: 2rem; /* Smaller button text for mobile */
+    padding: 40px 60px; /* Adjusted padding */
+  }
+
+
+  .plus-sign {
+    font-size: 4rem; /* Smaller plus sign for mobile */
+  }
+}
+
+
+/* Glowing Animation for Text */
+@keyframes pulseGlow {
+  0% {
+    text-shadow: 0 0 10px #9b59b6, 0 0 20px #9b59b6, 0 0 30px #9b59b6;
+  }
+  50% {
+    text-shadow: 0 0 20px #9b59b6, 0 0 30px #9b59b6, 0 0 40px #9b59b6;
+  }
+  100% {
+    text-shadow: 0 0 10px #9b59b6, 0 0 20px #9b59b6, 0 0 30px #9b59b6;
+  }
+}
+
+
+/* Glowing Effect for Button */
+@keyframes glowEffect {
+  0% {
+    box-shadow: 0 0 10px #9b59b6, 0 0 20px #9b59b6, 0 0 30px #9b59b6;
+  }
+  50% {
+    box-shadow: 0 0 20px #9b59b6, 0 0 40px #9b59b6, 0 0 50px #9b59b6;
+  }
+  100% {
+    box-shadow: 0 0 10px #9b59b6, 0 0 20px #9b59b6, 0 0 30px #9b59b6;
+  }
+}
+
+
+/* Bouncing animation for the plus sign */
+@keyframes bouncePlus {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 </style>
+

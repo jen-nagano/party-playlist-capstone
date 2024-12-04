@@ -5,19 +5,26 @@ public class Song {
     private String title;
     private String artist;
     private String spotifyId;
+    private int duration;
 
-    public Song(int songId, String title, String artist, String spotifyId) {
+    public Song(int songId, String title, String artist, String spotifyId, int duration) {
         this.songId = songId;
         this.title = title;
         this.artist = artist;
         this.spotifyId = spotifyId;
+        this.duration = duration;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public Song() {
-        this.songId = songId;
-        this.title = title;
-        this.artist = artist;
-        this.spotifyId = spotifyId;
+
     }
 
     public int getSongId() {

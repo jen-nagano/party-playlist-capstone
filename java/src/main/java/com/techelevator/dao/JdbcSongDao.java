@@ -80,6 +80,7 @@ public class JdbcSongDao implements SongDao {
         song.setTitle(results.getString("title"));
         song.setArtist(results.getString("artist"));
         song.setSpotifyId(results.getString("spotify_id"));
+        song.setDuration(results.getInt("duration"));
         return song;
     }
 }

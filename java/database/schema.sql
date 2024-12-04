@@ -1,9 +1,10 @@
 BEGIN TRANSACTION;
 
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS event;
+DROP TABLE IF EXISTS user_event;
 DROP TABLE IF EXISTS playlist_song;
 DROP TABLE IF EXISTS event_playlist;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS event;
 DROP TABLE IF EXISTS song;
 DROP TABLE IF EXISTS playlist;
 
@@ -38,6 +39,7 @@ CREATE TABLE song (
     song_id SERIAL,
     title TEXT,
     artist TEXT,
+    duration INTEGER,
     spotify_id VARCHAR(30),
     CONSTRAINT PK_song PRIMARY KEY (song_id)
 );
@@ -61,6 +63,16 @@ CREATE TABLE event_playlist (
     CONSTRAINT PK_event_playlist PRIMARY KEY (ep_id),
     CONSTRAINT FK_event_playlist_id FOREIGN KEY (playlist_id) REFERENCES playlist(playlist_id),
     CONSTRAINT FK_playlist_event_id FOREIGN KEY (event_id) REFERENCES event(event_id)
+);
+
+CREATE TABLE user_event (
+    ue_id SERIAL,
+    user_id INTEGER,
+    event_id INTEGER,
+    role VARCHAR(20),
+    CONSTRAINT PK_user_event PRIMARY KEY (ue_id),
+    CONSTRAINT FK_user_id FOREIGN KEY (user_id) REFERENCES users(user_id),
+    CONSTRAINT FK_host_event_id FOREIGN KEY (event_id) REFERENCES event(event_id)
 );
 
 COMMIT TRANSACTION;

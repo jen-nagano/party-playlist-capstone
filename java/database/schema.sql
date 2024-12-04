@@ -2,7 +2,7 @@ BEGIN TRANSACTION;
 
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS event;
-DROP TABLE IF EXISTS song_playlist;
+DROP TABLE IF EXISTS playlist_song;
 DROP TABLE IF EXISTS event_playlist;
 DROP TABLE IF EXISTS song;
 DROP TABLE IF EXISTS playlist;
@@ -19,8 +19,8 @@ CREATE TABLE event (
 	event_id SERIAL,
 	name TEXT NOT NULL,
 	date DATE NOT NULL,
-	start_time TIMESTAMPTZ,
-	end_time TIMESTAMPTZ,
+	start_time TEXT,
+	end_time TEXT,
 	creator INTEGER,
 	CONSTRAINT PK_event PRIMARY KEY (event_id),
 	CONSTRAINT FK_creator FOREIGN KEY (creator) REFERENCES users(user_id)
@@ -42,14 +42,14 @@ CREATE TABLE song (
     CONSTRAINT PK_song PRIMARY KEY (song_id)
 );
 
-CREATE TABLE song_playlist (
-    sp_id SERIAL,
+CREATE TABLE playlist_song (
+    ps_id SERIAL,
     playlist_id INTEGER,
     song_id INTEGER,
     position INTEGER,
     up_vote INTEGER,
     down_vote INTEGER,
-    CONSTRAINT PK_song_playlist PRIMARY KEY (sp_id),
+    CONSTRAINT PK_playlist_song PRIMARY KEY (ps_id),
     CONSTRAINT FK_playlist_id FOREIGN KEY (playlist_id) REFERENCES playlist(playlist_id),
     CONSTRAINT FK_song_id FOREIGN KEY (song_id) REFERENCES song(song_id)
 );

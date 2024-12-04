@@ -8,11 +8,11 @@ public class Event {
     private int id;
     private String name;
     private LocalDate date;
-    private OffsetDateTime startTime;
-    private OffsetDateTime endTime;
+    private String startTime;
+    private String endTime;
     private int creator;
 
-    public Event(int id, String name, LocalDate date, OffsetDateTime startTime, OffsetDateTime endTime, int creator) {
+    public Event(int id, String name, LocalDate date, String startTime, String endTime, int creator) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -49,19 +49,19 @@ public class Event {
         this.date = date;
     }
 
-    public OffsetDateTime getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(OffsetDateTime startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public OffsetDateTime getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(OffsetDateTime endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 

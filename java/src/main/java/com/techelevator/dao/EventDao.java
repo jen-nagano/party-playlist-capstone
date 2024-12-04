@@ -4,4 +4,5 @@ import com.techelevator.model.Event;
 
 public interface EventDao {
     Event createEvent(Event event);
+    Event getEventById(int eventId);
 }

@@ -7,8 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
-import java.time.OffsetDateTime;
-
 @Component
 public class JdbcEventDao implements EventDao {
     private final JdbcTemplate jdbcTemplate;
@@ -34,14 +32,36 @@ public class JdbcEventDao implements EventDao {
         return newEvent;
     }
 
+    @Override
+    public Event getEventById(int eventId) {
+        Event event = null;
+        String sql = "SELECT event_id, name, date, start_time, end_time, creator " +
+                "FROM event " +
+                "WHERE event_id = ?;";
+
+        try {
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, eventId);
+            if (results.next()) {
+                event = mapRowToEvent(results);
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (Exception e) {
+            throw new DaoException("An unexpected error occurred while retrieving the event", e);
+        }
+
+        return event;
+    }
+
     private Event mapRowToEvent(SqlRowSet results) {
         Event event = new Event();
 
-        event.setId(results.getInt("id"));
+        event.setId(results.getInt("event_id"));
         event.setName(results.getString("name"));
         event.setDate(results.getDate("date").toLocalDate());
-        event.setStartTime(results.getObject("start_time", OffsetDateTime.class));
-        event.setEndTime(results.getObject("end_time", OffsetDateTime.class));
+        event.setStartTime(results.getString("start_time"));
+        event.setEndTime(results.getString("end_time"));
+        event.setCreator(results.getInt("creator"));
 
         return event;
     }

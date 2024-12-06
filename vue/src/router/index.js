@@ -51,13 +51,15 @@ const routes = [
     }
   },
   {
-    path: '/event',
-    name: 'event',
+    path: "/events/:eventId", // Include the dynamic parameter
+    name: "EventView",
     component: EventView,
+    props: true, // Pass route params as props to the component
     meta: {
       requiresAuth: true
     }
   },
+
   {
     path: '/playlist',
     name: 'playlist',

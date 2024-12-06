@@ -80,9 +80,10 @@ export default {
     },
     viewEvent(eventId) {
       console.log('View event details for ID:', eventId);
+      this.$router.push({ name: "EventView", params: { eventId } });
       // Add navigation or modal logic here if needed
     },
-    mounted() {
+    created() {
       // Fetch events when the component loads
       this.fetchEvents();
     }

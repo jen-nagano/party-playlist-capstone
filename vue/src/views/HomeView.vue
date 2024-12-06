@@ -12,8 +12,17 @@
       <p class="welcome-message">Welcome to the Panda Party!</p>
      
       <!-- Create Event Header -->
-      <h2 class="create-event-header">Create Event</h2>
+      <h2 class="create-event-header">Your Events</h2>
 
+      <!-- Tile Section -->
+      <h2 class="event-list-header">Your Events</h2>
+      <div class="event-tiles">
+        <div v-for="event in events" :key="event.id" class="event-tile">
+          <h3 class="event-title">{{ event.name }}</h3>
+          <p class="event-description">{{ event.description }}</p>
+          <button class="btn-view-details" @click="viewEvent(event.id)">View Details</button>
+        </div>
+      </div>
 
       <!-- Create Event Button (Styled as a Panel with Plus Sign) -->
       <button class="btn-create-event" v-on:click="showEvent">
@@ -34,6 +43,7 @@
 
 <script>
 import EventForm from '../components/EventForm.vue';
+import axios from 'axios'; // Install axios with npm if you haven't: npm install axios
 
 export default {
   components: {
@@ -41,7 +51,8 @@ export default {
   },
   data() {
     return {
-      show_event: false
+      show_event: false, // Controls event form visibility
+      events: [] // Stores the events fetched from the database
     };
   },
   methods: {
@@ -50,6 +61,30 @@ export default {
     },
     hideEvent() {
       this.show_event = false;
+      this.fetchEvents(); // Refresh events after a new one is added
+    },
+    async fetchEvents() {
+      try {
+        const userId = this.$store.state.user?.id; // Ensure user.id exists
+        if (!userId) {
+          console.error('User ID is not defined');
+          return;
+        }
+
+        const response = await axios.get(`users/${userId}/events?role=host`);
+        this.events = response.data;
+      } catch (error) {
+        console.error('Error fetching events:', error);
+        this.events = []; // Optionally clear the events list on failure
+      }
+    },
+    viewEvent(eventId) {
+      console.log('View event details for ID:', eventId);
+      // Add navigation or modal logic here if needed
+    },
+    mounted() {
+      // Fetch events when the component loads
+      this.fetchEvents();
     }
 
   }
@@ -225,6 +260,56 @@ export default {
   50% {
     transform: translateY(-10px);
   }
+}
+/* added styles here -Jen */
+.event-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 30px;
+  justify-content: center;
+}
+
+.event-tile {
+  background-color: #9b59b6; /* Purple background color */
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 200px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.event-tile:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.event-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.event-description {
+  font-size: 1rem;
+  margin-bottom: 15px;
+}
+
+.btn-view-details {
+  background-color: white;
+  color: #9b59b6;
+  border: 2px solid #9b59b6;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-view-details:hover {
+  background-color: #8e44ad;
+  color: white;
 }
 </style>
 

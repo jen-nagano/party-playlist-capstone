@@ -16,20 +16,43 @@
 
 
       <!-- Create Event Button (Styled as a Panel with Plus Sign) -->
-      <router-link class="btn-create-event" :to="{ name: 'event' }">
+      <button class="btn-create-event" v-on:click="showEvent">
         <span class="plus-sign">+</span>
-      </router-link>
+      </button>
+
+      <div class="Event" v-if="show_event">
+        <h1>Event</h1>
+        <p>Complete the form to add a new event.</p>
+        <EventForm @formSubmitted="hideEvent"/>
+        <!-- <router-link class="btn btn-submit" :to="{ name: 'playlist' }">Create Playlist</router-link> -->
+      
+    </div>
     </div>
   </div>
 </template>
 
 
 <script>
+import EventForm from '../components/EventForm.vue';
+
 export default {
-  data() {
-    return {};
+  components: {
+    EventForm
   },
-  methods: {}
+  data() {
+    return {
+      show_event: false
+    };
+  },
+  methods: {
+    showEvent() {
+      this.show_event = true;
+    },
+    hideEvent() {
+      this.show_event = false;
+    }
+
+  }
 };
 </script>
 

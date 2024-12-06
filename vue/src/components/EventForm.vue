@@ -41,14 +41,7 @@
           date: {},
           startTime: {},
           endTime:{},
-          creator:1
-        //   boardId: this.card.boardId,
-        //   title: this.card.title,
-        //   description: this.card.description,
-        //   status: this.card.status,
-        //   tag: this.card.tag,
-        //   avatar: this.card.avatar,
-        //   date: this.card.date
+          creator: this.$store.state.user.id
         },
       };
     },
@@ -79,7 +72,7 @@
               this.handleErrorResponse(error, 'adding');
             });
         
-        
+            this.$emit('formSubmitted');
         // EDIT EVENT is handled here
         // else {
         //   EventService

@@ -61,9 +61,10 @@ const routes = [
   },
 
   {
-    path: '/playlist',
-    name: 'playlist',
+    path: '/playlists/:playlistId',
+    name: 'PlaylistView',
     component: PlaylistView,
+    props: true,
     meta: {
       requiresAuth: false
     }

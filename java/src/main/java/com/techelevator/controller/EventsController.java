@@ -73,7 +73,7 @@ public class EventsController {
 
     @RequestMapping(path = "/events/{eventId}/playlists", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void addPlaylistToEvent(@PathVariable int eventId, @RequestBody Playlist playlist) {
+    public Playlist addPlaylistToEvent(@PathVariable int eventId, @RequestBody Playlist playlist) {
         // Step 1: Ensure the event exists
         Event event = eventDao.getEventById(eventId);
         if (event == null) {
@@ -90,6 +90,8 @@ public class EventsController {
 
         // Step 4: Link the playlist to the event
         playlistDao.linkPlaylistToEvent(eventId, newPlaylist.getPlaylistId());
+
+        return newPlaylist;
     }
 
     @GetMapping("/users/{userId}/events")

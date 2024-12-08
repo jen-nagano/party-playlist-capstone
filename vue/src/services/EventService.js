@@ -12,6 +12,10 @@ export default {
 
   updateEvent(event) {
     return http.put('/events', event)
+  },
+
+  addPlaylistToEvent(playlist, eventId ) {
+    return http.post(`events/${eventId}/playlists`, playlist);
   }
 
 }

@@ -12,10 +12,11 @@
       <p class="welcome-message">Welcome to the Panda Party!</p>
      
       <!-- Create Event Header -->
-      <h2 class="create-event-header">Your Events</h2>
+      <!-- <h2 class="create-event-header">Your Events</h2> -->
 
       <!-- Tile Section -->
       <h2 class="event-list-header">Your Events</h2>
+      <div v-if="events.length === 0">No events available.</div>
       <div class="event-tiles">
         <div v-for="event in events" :key="event.id" class="event-tile">
           <h3 class="event-title">{{ event.name }}</h3>
@@ -25,7 +26,7 @@
       </div>
 
       <!-- Create Event Button (Styled as a Panel with Plus Sign) -->
-      <button class="btn-create-event" v-on:click="showEvent">
+      <button class="btn-create-event" v-on:click="showEvent" v-if="!show_event">
         <span class="plus-sign">+</span>
       </button>
 
@@ -55,6 +56,10 @@ export default {
       events: [] // Stores the events fetched from the database
     };
   },
+  created() {
+    // Fetch events when the component loads
+    this.fetchEvents();
+  },
   methods: {
     showEvent() {
       this.show_event = true;
@@ -82,13 +87,10 @@ export default {
       console.log('View event details for ID:', eventId);
       this.$router.push({ name: "EventView", params: { eventId } });
       // Add navigation or modal logic here if needed
-    },
-    created() {
-      // Fetch events when the component loads
-      this.fetchEvents();
     }
-
   }
+
+  
 };
 </script>
 

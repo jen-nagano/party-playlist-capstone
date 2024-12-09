@@ -1,6 +1,10 @@
 <template>
     <div class="landing-page">
-      <h1 class="form-title">Welcome to Panda Party Playlist</h1>
+            <!-- Banner Section -->
+    <div class="banner">
+      <h1 class="banner-title"></h1>
+    </div>
+      <h1 class="form-title">Welcome to Panda Party Playlist!</h1>
       <!-- Button Container -->
       <div class="landing-page-buttons">
         <button @click="goToSignUp" class="submit-button">Sign Up</button>
@@ -33,6 +37,29 @@
     font-family: 'Roboto', sans-serif;
     text-align: center;
   }
+  /* Banner Section */
+.banner {
+  width: 100%;
+  height: 350px;   /* Increase the height of the banner to give more space */
+  background-image: url('/src/img/home.png'); /* Your banner image path */
+  background-size: cover;
+  background-position: top center;  /* This keeps the top part of the image visible */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+  padding-top: 60px; /* Adjust to avoid overlap with navbar, can be fine-tuned */
+}
+
+
+.banner-title {
+  font-size: 3rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Optional text shadow */
+  color: #8e44ad; /* Purple color */
+  animation: pulseGlow 1.5s ease-in-out infinite;
+}
   /* Title Animation */
   .form-title {
     font-size: 2.5rem;

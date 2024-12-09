@@ -1,15 +1,10 @@
 <template>
   <div class="home">
-    <!-- Banner Section -->
-    <div class="banner">
-      <h1 class="banner-title"></h1>
-    </div>
-
 
     <!-- Main Content -->
     <div class="content">
       <!-- Welcome Message -->
-      <p class="welcome-message">Welcome to the Panda Party!</p>
+      <!-- <p class="welcome-message">Welcome to the Panda Party!</p> -->
      
       <!-- Create Event Header -->
       <!-- <h2 class="create-event-header">Your Events</h2> -->

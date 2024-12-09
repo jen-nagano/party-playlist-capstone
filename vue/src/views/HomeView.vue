@@ -15,13 +15,14 @@
       <!-- <h2 class="create-event-header">Your Events</h2> -->
 
       <!-- Tile Section -->
-      <h2 class="event-list-header">Your Events</h2>
-      <div v-if="events.length === 0">No events available.</div>
+      <h2 class="event-list-header">The events you are hosting:</h2>
+      <div v-if="events.length === 0">You are not hosting any events.</div>
       <div class="event-tiles">
         <div v-for="event in events" :key="event.id" class="event-tile">
           <h3 class="event-title">{{ event.name }}</h3>
           <p class="event-description">{{ event.description }}</p>
           <button class="btn-view-details" @click="viewEvent(event.id)">View Details</button>
+          <button class="btn-view-details" @click="removeEvent(event.id)">Remove Event</button>
         </div>
       </div>
 
@@ -35,8 +36,28 @@
         <p>Complete the form to add a new event.</p>
         <EventForm @formSubmitted="hideEvent"/>
         <!-- <router-link class="btn btn-submit" :to="{ name: 'playlist' }">Create Playlist</router-link> -->
-      
-    </div>
+      </div>
+
+      <h2 class="event-list-header">The events you are invited to:</h2>
+      <div v-if="guestEvents.length === 0">You are not attending any events.</div>
+      <div class="event-tiles">
+        <div v-for="event in guestEvents" :key="event.id" class="event-tile">
+          <h3 class="event-title">{{ event.name }}</h3>
+          <p class="event-description">{{ event.description }}</p>
+          <button class="btn-view-details" @click="viewEvent(event.id)">View Details</button>
+        </div>
+      </div>
+
+      <h2 class="event-list-header">Saved Playlists:</h2>
+      <div v-if="savedPlaylists.length === 0">You do not have any saved playlists.</div>
+      <div class="event-tiles">
+        <div v-for="playlist in savedPlaylists" :key="playlist.id" class="event-tile">
+          <!-- <h3 class="event-title">{{ event.name }}</h3>
+          <p class="event-description">{{ event.description }}</p>
+          <button class="btn-view-details" @click="viewEvent(event.id)">View Details</button>
+          <button class="btn-view-details" @click="removeEvent(event.id)">Remove Event</button> -->
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -53,7 +74,9 @@ export default {
   data() {
     return {
       showEvent: false, // Controls event form visibility
-      events: [] // Stores the events fetched from the database
+      events: [], // Stores the events fetched from the database
+      guestEvents: [],
+      savedPlaylists: []
     };
   },
   created() {
@@ -73,11 +96,26 @@ export default {
           return;
         }
 
-        const response = await axios.get(`users/${userId}/events?role=host`);
+        const response = await axios.get(`/users/${userId}/events?role=host`);
         this.events = response.data;
       } catch (error) {
         console.error('Error fetching events:', error);
         this.events = []; // Optionally clear the events list on failure
+      }
+    },
+    async fetchGuestEvents() {
+      try {
+        const userId = this.$store.state.user?.id; // Ensure user.id exists
+        if (!userId) {
+          console.error('User ID is not defined');
+          return;
+        }
+
+        const response = await axios.get(`/users/${userId}/events?role=guest`);
+        this.guestEvents = response.data;
+      } catch (error) {
+        console.error('Error fetching events:', error);
+        this.guestEvents = []; // Optionally clear the events list on failure
       }
     },
     viewEvent(eventId) {

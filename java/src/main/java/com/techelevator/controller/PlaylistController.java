@@ -73,4 +73,24 @@ public class PlaylistController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to link song to playlist", e);
         }
     }
+
+    @RequestMapping(path = "/playlists/{playlistId}/songs/{songId}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeSongFromPlaylist(@PathVariable int playlistId, @PathVariable int songId) {
+        try {
+            songDao.removeSongFromPlaylist(playlistId, songId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to remove song from playlist", e);
+        }
+    }
+
+    @RequestMapping(path = "/users/{userId}/playlists/{playlistId}", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void savePlaylistForUser(@PathVariable int userId, @PathVariable int playlistId) {
+        try {
+            playlistDao.savePlaylistForUser(userId, playlistId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save playlist for user", e);
+        }
+    }
 }

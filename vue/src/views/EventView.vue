@@ -16,6 +16,7 @@
         <h4>{{ playlist.name }}</h4>
         <p>{{ playlist.description }}</p>
         <button @click="viewPlaylist(playlist.playlistId)">View Playlist</button>
+        <button @click="savePlaylist(playlist.playlistId)">Save Playlist</button>
       </div>
 
       <!-- Message if no playlists -->
@@ -97,6 +98,26 @@ export default {
     // Placeholder for viewing a playlist (if implemented later)
     viewPlaylist(playlistId) { 
       this.$router.push({ name: 'PlaylistView', params: { playlistId: playlistId } });
+    },
+    savePlaylist(playlistId) {
+      EventService
+        .savePlaylist(this.$store.state.user.id, playlistId)
+        .then(response => {
+          if (response.status === 201) {
+            // this.$store.commit(
+            //   'SET_NOTIFICATION',
+            //   {
+            //     message: 'A new event was added.',
+            //     type: 'success'
+            //   }
+            // );
+            //console.log(response.data);
+            //this.$router.push({ name: 'PlaylistView', params: { playlistId: response.data.playlistId } });
+          }
+        })
+        .catch(error => {
+          console.log(error, 'adding');
+        });
     },
     submitForm() {
       if (this.editPlaylist.name === '') {

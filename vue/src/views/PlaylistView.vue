@@ -26,10 +26,10 @@ export default {
 
   </div>
   <div class="songs-list mt-6">
-      <h2 class="text-2xl font-semibold mb-4">These are the songs currently on this playlist:</h2>
+      <h2 class="text-2xl font-semibold mb-4">Current Playlist Songs:</h2>
       <div
         v-for="song in playlistSongs"
-        :key="song.id"
+        :key="song.songId"
         class="song-card"
       >
         <img :src="song.imgUrl" alt="Album Art" />
@@ -38,13 +38,13 @@ export default {
           <p class="song-artist">{{ song.artist }}</p>
           <p class="song-duration">{{ this.getDuration(song.duration) }}</p>
         </div>
-        <button>Remove Song</button>
+        <button @click="removeSong(song.songId)">Remove Song</button>
         <!-- <button @click="playSong(song.uri)">Play Song</button> -->
         
       </div>
     </div>
   <div class="playlist-container">
-    <h1 class="text-center text-4xl font-bold py-4">Panda Party Playlist</h1>
+    <h1 class="text-center text-4xl font-bold py-4">Search for songs to add to your playlist.</h1>
     <div class="search-section p-4 bg-gray-800 rounded-lg">
       <!-- <h2 class="text-2xl text-white mb-2">Search for a song and play it!</h2> -->
       <div class="flex items-center space-x-2">
@@ -81,7 +81,7 @@ export default {
     </div> -->
     <!-- Songs List Section -->
     <div class="songs-list mt-6">
-      <h2 class="text-2xl font-semibold mb-4">Search for a song title or artist, then add songs to your playlist.</h2>
+      <!-- <h2 class="text-2xl font-semibold mb-4">Search for a song title or artist, then add songs to your playlist.</h2> -->
       <div
         v-for="song in songs"
         :key="song.id"
@@ -269,6 +269,19 @@ export default {
           console.log(error, 'adding');
         });
     },
+    async removeSong(songId) {
+      console.log("Removing song with ID:", songId);
+      try {
+        await axios.delete(`/playlists/${this.playlistId}/songs/${songId}`);
+        console.log(`Song with ID ${songId} removed from playlist ${this.playlistId}`);
+        // Refresh the list of songs in the playlist
+        this.fetchSongs();
+      } catch (error) {
+        console.error("Error removing song from playlist:", error);
+        alert("Failed to remove the song from the playlist.");
+      }
+    },
+
     getDuration(duration_ms) {
       let duration = Math.round(duration_ms/1000);
       let minutes = Math.round(duration/60);

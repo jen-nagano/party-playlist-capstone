@@ -8,4 +8,5 @@ public interface SongDao {
     Song createSong(Song song);
     List<Song> getSongsByPlaylist(int playlistId);
     void addSongToPlaylist(int playlistId, int songId);
+    void removeSongFromPlaylist(int playlistId, int songId);
 }

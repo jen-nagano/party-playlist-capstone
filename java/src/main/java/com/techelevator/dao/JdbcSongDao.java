@@ -74,6 +74,20 @@ public class JdbcSongDao implements SongDao {
         }
     }
 
+    public void removeSongFromPlaylist(int playlistId, int songId) {
+        String sql = "DELETE FROM playlist_song WHERE playlist_id = ? AND song_id = ?";
+        try {
+            int rowsAffected = jdbcTemplate.update(sql, playlistId, songId);
+            //System.out.println("Rows affected: " + rowsAffected);
+            if (rowsAffected == 0) {
+                System.out.println("No matching song found in playlist.");
+            }
+        } catch (Exception e) {
+            System.err.println("SQL error: " + e.getMessage());
+            throw e;
+        }
+    }
+
     private Song mapRowToSong(SqlRowSet results) {
         Song song = new Song();
         song.setSongId(results.getInt("song_id"));

@@ -3,6 +3,7 @@ BEGIN TRANSACTION;
 DROP TABLE IF EXISTS user_event;
 DROP TABLE IF EXISTS playlist_song;
 DROP TABLE IF EXISTS event_playlist;
+DROP TABLE IF EXISTS user_playlist;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS event;
 DROP TABLE IF EXISTS song;
@@ -74,6 +75,15 @@ CREATE TABLE user_event (
     CONSTRAINT PK_user_event PRIMARY KEY (ue_id),
     CONSTRAINT FK_user_id FOREIGN KEY (user_id) REFERENCES users(user_id),
     CONSTRAINT FK_host_event_id FOREIGN KEY (event_id) REFERENCES event(event_id)
+);
+
+CREATE TABLE user_playlist (
+    up_id SERIAL,
+    user_id INTEGER,
+    playlist_id INTEGER,
+    CONSTRAINT PK_user_playlist PRIMARY KEY (up_id),
+    CONSTRAINT FK_user_id_with_playlist FOREIGN KEY (user_id) REFERENCES users(user_id),
+    CONSTRAINT FK_playlist_id_with_user FOREIGN KEY (playlist_id) REFERENCES playlist(playlist_id)
 );
 
 COMMIT TRANSACTION;

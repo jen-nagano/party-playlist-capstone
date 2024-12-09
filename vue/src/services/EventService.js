@@ -20,6 +20,10 @@ export default {
 
   addSongToPlaylist(song, playlistId) {
     return http.post(`playlists/${playlistId}/songs`, song);
+  },
+
+  savePlaylist(userId, playlistId) {
+    return http.post(`/users/${userId}/playlists/${playlistId}`);
   }
 
 }

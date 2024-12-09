@@ -10,4 +10,5 @@ public interface PlaylistDao {
     Playlist getPlaylistById(int playlistId);
     List<Playlist> getPlaylistsByEventId(int eventId);
     void linkPlaylistToEvent(int eventId, int playlistId);
+    void savePlaylistForUser(int userId, int playlistId);
 }

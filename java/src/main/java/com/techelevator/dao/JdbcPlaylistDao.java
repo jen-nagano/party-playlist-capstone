@@ -91,6 +91,12 @@ public class JdbcPlaylistDao implements PlaylistDao{
         }
     }
 
+    // Save a playlist for a user in the user_playlist table
+    public void savePlaylistForUser(int userId, int playlistId) {
+        String sql = "INSERT INTO user_playlist (user_id, playlist_id) VALUES (?, ?)";
+        jdbcTemplate.update(sql, userId, playlistId);
+    }
+
     private Playlist mapRowToPlaylist(SqlRowSet results) {
         Playlist playlist = new Playlist();
 

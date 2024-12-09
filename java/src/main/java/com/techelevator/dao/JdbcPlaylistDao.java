@@ -97,6 +97,32 @@ public class JdbcPlaylistDao implements PlaylistDao{
         jdbcTemplate.update(sql, userId, playlistId);
     }
 
+    /**
+     * Fetch all playlists for a given user using the user_playlist join table
+     * @param userId the ID of the user
+     * @return List of playlists associated with the user
+     */
+    public List<Playlist> getPlaylistsByUserId(int userId) {
+        List<Playlist> playlists = new ArrayList<>();
+        String sql = "SELECT p.* " +
+                "FROM playlist p " +
+                "JOIN user_playlist up ON p.playlist_id = up.playlist_id " +
+                "WHERE up.user_id = ?;";
+        System.out.println(sql);
+
+        try {
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+            while (results.next()) {
+                System.out.print("getting a playlist for user: " + userId);
+                playlists.add(mapRowToPlaylist(results));
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        }
+
+        return playlists;
+    }
+
     private Playlist mapRowToPlaylist(SqlRowSet results) {
         Playlist playlist = new Playlist();
 

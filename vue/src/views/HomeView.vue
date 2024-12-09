@@ -52,6 +52,9 @@
       <div v-if="savedPlaylists.length === 0">You do not have any saved playlists.</div>
       <div class="event-tiles">
         <div v-for="playlist in savedPlaylists" :key="playlist.id" class="event-tile">
+          <h4>{{ playlist.name }}</h4>
+          <p>{{ playlist.description }}</p>
+          <button @click="viewPlaylist(playlist.playlistId)">View Playlist</button>
           <!-- <h3 class="event-title">{{ event.name }}</h3>
           <p class="event-description">{{ event.description }}</p>
           <button class="btn-view-details" @click="viewEvent(event.id)">View Details</button>
@@ -82,11 +85,15 @@ export default {
   created() {
     // Fetch events when the component loads
     this.fetchEvents();
+    this.fetchSavedPlaylists();
   },
   methods: {
     hideEvent() {
       this.showEvent = false;
       this.fetchEvents(); // Refresh events after a new one is added
+    },
+    viewPlaylist(playlistId) { 
+      this.$router.push({ name: 'PlaylistView', params: { playlistId: playlistId } });
     },
     async fetchEvents() {
       try {
@@ -116,6 +123,24 @@ export default {
       } catch (error) {
         console.error('Error fetching events:', error);
         this.guestEvents = []; // Optionally clear the events list on failure
+      }
+    },
+    async fetchSavedPlaylists() {
+      try {
+        const userId = this.$store.state.user?.id; // Make sure the user ID is available
+        if (!userId) {
+          console.warn("User ID is not defined.");
+          return;
+        }
+
+        const response = await axios.get(`/users/${userId}/playlists`);
+        this.savedPlaylists = response.data; // Update the component's data property
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          console.warn("No saved playlists found for this user.");
+        } else {
+          console.error("Error fetching saved playlists:", error);
+        }
       }
     },
     viewEvent(eventId) {

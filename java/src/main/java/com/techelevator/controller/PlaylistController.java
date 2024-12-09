@@ -93,4 +93,14 @@ public class PlaylistController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save playlist for user", e);
         }
     }
+
+    @RequestMapping(path = "/users/{userId}/playlists", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public List<Playlist> getPlaylistsForUser(@PathVariable int userId) {
+        try {
+            return playlistDao.getPlaylistsByUserId(userId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch playlists for user", e);
+        }
+    }
 }

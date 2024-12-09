@@ -41,6 +41,7 @@ CREATE TABLE song (
     artist TEXT,
     duration INTEGER,
     spotify_id VARCHAR(30),
+    img_url TEXT,
     CONSTRAINT PK_song PRIMARY KEY (song_id)
 );
 

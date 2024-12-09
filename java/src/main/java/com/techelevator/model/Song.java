@@ -5,13 +5,23 @@ public class Song {
     private String title;
     private String artist;
     private String spotifyId;
+    private String imgUrl;
     private int duration;
 
-    public Song(int songId, String title, String artist, String spotifyId, int duration) {
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public Song(int songId, String title, String artist, String spotifyId, String imgUrl, int duration) {
         this.songId = songId;
         this.title = title;
         this.artist = artist;
         this.spotifyId = spotifyId;
+        this.imgUrl = imgUrl;
         this.duration = duration;
     }
 

@@ -25,10 +25,10 @@ public class JdbcSongDao implements SongDao {
     @Override
     public Song createSong(Song song) {
         Song newSong = null;
-        String sql = "INSERT INTO song (title, artist, spotify_id) VALUES (?, ?, ?) RETURNING *;";
+        String sql = "INSERT INTO song (title, artist, duration, spotify_id, img_url) VALUES (?, ?, ?, ?, ?) RETURNING *;";
 
         try {
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, song.getTitle(), song.getArtist(), song.getSpotifyId());
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, song.getTitle(), song.getArtist(), song.getDuration(), song.getSpotifyId(), song.getImgUrl());
             if (results.next()) {
                 newSong = mapRowToSong(results);
             }
@@ -42,7 +42,7 @@ public class JdbcSongDao implements SongDao {
     public List<Song> getSongsByPlaylist(int playlistId) {
         List<Song> songs = new ArrayList<Song>();
 
-        String sql = "SELECT s.song_id, s.title, s.artist, s.spotify_id " +
+        String sql = "SELECT s.song_id, s.title, s.artist, s.duration, s.spotify_id, s.img_url " +
                 "FROM song s " +
                 "JOIN playlist_song ps ON s.song_id = ps.song_id " +
                 "WHERE ps.playlist_id = ?;";
@@ -61,8 +61,8 @@ public class JdbcSongDao implements SongDao {
 
     @Override
     public void addSongToPlaylist(int playlistId, int songId) {
-        String sql = "INSERT INTO playlist_song (playlist_id, song_id, up_vote, down_vote) " +
-                "VALUES (?, ?, 0, 0);";
+        String sql = "INSERT INTO playlist_song (playlist_id, song_id, position, up_vote, down_vote) " +
+                "VALUES (?, ?, 1, 0, 0);";
         try {
             jdbcTemplate.update(sql, playlistId, songId);
         }
@@ -80,6 +80,7 @@ public class JdbcSongDao implements SongDao {
         song.setTitle(results.getString("title"));
         song.setArtist(results.getString("artist"));
         song.setSpotifyId(results.getString("spotify_id"));
+        song.setImgUrl(results.getString("img_url"));
         song.setDuration(results.getInt("duration"));
         return song;
     }

@@ -26,11 +26,11 @@
       </div>
 
       <!-- Create Event Button (Styled as a Panel with Plus Sign) -->
-      <button class="btn-create-event" v-on:click="showEvent" v-if="!show_event">
+      <button class="btn-create-event" v-on:click="showEvent = true" v-if="!showEvent">
         <span class="plus-sign">+</span>
       </button>
 
-      <div class="Event" v-if="show_event">
+      <div class="Event" v-if="showEvent">
         <h1>Event</h1>
         <p>Complete the form to add a new event.</p>
         <EventForm @formSubmitted="hideEvent"/>
@@ -52,7 +52,7 @@ export default {
   },
   data() {
     return {
-      show_event: false, // Controls event form visibility
+      showEvent: false, // Controls event form visibility
       events: [] // Stores the events fetched from the database
     };
   },
@@ -61,11 +61,8 @@ export default {
     this.fetchEvents();
   },
   methods: {
-    showEvent() {
-      this.show_event = true;
-    },
     hideEvent() {
-      this.show_event = false;
+      this.showEvent = false;
       this.fetchEvents(); // Refresh events after a new one is added
     },
     async fetchEvents() {

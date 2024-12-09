@@ -23,11 +23,30 @@ export default {
 <template>
   <div class="playlist-container">
     <h1>{{ playlist.name }}</h1>
+
   </div>
+  <div class="songs-list mt-6">
+      <h2 class="text-2xl font-semibold mb-4">These are the songs currently on this playlist:</h2>
+      <div
+        v-for="song in playlistSongs"
+        :key="song.id"
+        class="song-card"
+      >
+        <img :src="song.imgUrl" alt="Album Art" />
+        <div class="song-info">
+          <p class="song-title">{{ song.title }}</p>
+          <p class="song-artist">{{ song.artist }}</p>
+          <p class="song-duration">{{ song.duration }}</p>
+        </div>
+        <button>Remove Song</button>
+        <!-- <button @click="playSong(song.uri)">Play Song</button> -->
+        
+      </div>
+    </div>
   <div class="playlist-container">
     <h1 class="text-center text-4xl font-bold py-4">Panda Party Playlist</h1>
     <div class="search-section p-4 bg-gray-800 rounded-lg">
-      <h2 class="text-2xl text-white mb-2">Search for a song and play it!</h2>
+      <!-- <h2 class="text-2xl text-white mb-2">Search for a song and play it!</h2> -->
       <div class="flex items-center space-x-2">
         <input
           v-model="searchQuery"
@@ -73,7 +92,7 @@ export default {
           <p class="song-title">{{ song.title }}</p>
           <p class="song-artist">{{ song.artist }}</p>
         </div>
-        <button>Add to Playlist</button>
+        <button @click="addSong(song)">Add to Playlist</button>
         <!-- <button @click="playSong(song.uri)">Play Song</button> -->
         
       </div>
@@ -82,12 +101,21 @@ export default {
 </template>
 <script>
 import axios from "axios";
+import EventService from "../services/EventService";
+
 export default {
+  props: {
+    playlistId: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       playlist: {},
       searchQuery: "", // User's search input
       songs: [], // Search results from Spotify
+      playlistSongs: [], // songs in playlist
       playbackState: null, // Playback state
       spotifyAccessToken: null, // Spotify API token
     };
@@ -100,8 +128,8 @@ export default {
   // Fetch details of the playlist
   async fetchPlaylistDetails() {
     try {
-      const playlistId = this.$route.params.playlistId;
-      const response = await axios.get(`/playlists/${playlistId}`);
+      //const playlistId = this.$route.params.playlistId;
+      const response = await axios.get(`/playlists/${this.playlistId}`);
       this.playlist = response.data;
     } catch (error) {
       console.error("Error fetching playlist details:", error);
@@ -112,9 +140,9 @@ export default {
   // Fetch playlists for the event
   async fetchSongs() {
     try {
-      const playlistId = this.$route.params.playlistId;
-      const response = await axios.get(`/playlists/${playlistId}/songs`);
-      this.songs = response.data;
+      //const playlistId = this.$route.params.playlistId;
+      const response = await axios.get(`/playlists/${this.playlistId}/songs`);
+      this.playlistSongs = response.data;
     } catch (error) {
       if (error.response && error.response.status === 404) {
         console.warn("No songs found for this playlist.");
@@ -169,6 +197,7 @@ export default {
           artist: track.artists.map((artist) => artist.name).join(", "),
           albumArt: track.album.images[0]?.url,
           uri: track.uri,
+          duration: track.duration_ms
         }));
         console.log("Search results:", this.songs);
       } catch (error) {
@@ -208,6 +237,37 @@ export default {
       } catch (error) {
         console.error("Error playing song:", error.response?.data || error.message);
       }
+    },
+    addSong(song) {
+      console.log(song);
+      const plainSong = JSON.parse(JSON.stringify(song));
+      console.log(plainSong);
+      const mySong = {
+        title:song.title,
+        artist:song.artist,
+        duration:song.duration,
+        spotifyId:song.uri.substring(14),
+        imgUrl:song.albumArt
+      }
+      console.log(mySong);
+      EventService
+        .addSongToPlaylist(mySong, this.playlist.playlistId)
+        .then(response => {
+          if (response.status === 201) {
+            // this.$store.commit(
+            //   'SET_NOTIFICATION',
+            //   {
+            //     message: 'A new event was added.',
+            //     type: 'success'
+            //   }
+            // );
+            console.log(response.data);
+            this.fetchSongs();
+          }
+        })
+        .catch(error => {
+          console.log(error, 'adding');
+        });
     },
     async getPlaybackState() {
       await this.getSpotifyToken();

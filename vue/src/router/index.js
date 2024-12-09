@@ -8,6 +8,7 @@ import LogoutView from '../views/LogoutView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import EventView from '../views/EventView.vue';
 import PlaylistView from '../views/PlaylistView.vue';
+import LandingPageView from '../views/LandingPageView.vue';
 
 /**
  * The Vue Router is used to "direct" the browser to render a specific view component
@@ -19,7 +20,15 @@ import PlaylistView from '../views/PlaylistView.vue';
  */
 const routes = [
   {
-    path: '/',
+    path: "/",
+    name: "landingPage",
+    component: LandingPageView,
+    meta: {
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/home',
     name: 'home',
     component: HomeView,
     meta: {

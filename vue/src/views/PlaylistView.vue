@@ -36,7 +36,7 @@ export default {
         <div class="song-info">
           <p class="song-title">{{ song.title }}</p>
           <p class="song-artist">{{ song.artist }}</p>
-          <p class="song-duration">{{ song.duration }}</p>
+          <p class="song-duration">{{ this.getDuration(song.duration) }}</p>
         </div>
         <button>Remove Song</button>
         <!-- <button @click="playSong(song.uri)">Play Song</button> -->
@@ -268,6 +268,12 @@ export default {
         .catch(error => {
           console.log(error, 'adding');
         });
+    },
+    getDuration(duration_ms) {
+      let duration = Math.round(duration_ms/1000);
+      let minutes = Math.round(duration/60);
+      let seconds = duration%60;
+      return minutes + ":" + seconds;
     },
     async getPlaybackState() {
       await this.getSpotifyToken();

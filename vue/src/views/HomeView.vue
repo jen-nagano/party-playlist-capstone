@@ -52,10 +52,9 @@
       <div v-if="savedPlaylists.length === 0">You do not have any saved playlists.</div>
       <div class="event-tiles">
         <div v-for="playlist in savedPlaylists" :key="playlist.id" class="event-tile">
-          <!-- <h3 class="event-title">{{ event.name }}</h3>
-          <p class="event-description">{{ event.description }}</p>
-          <button class="btn-view-details" @click="viewEvent(event.id)">View Details</button>
-          <button class="btn-view-details" @click="removeEvent(event.id)">Remove Event</button> -->
+          <h3 class="event-title">{{ playlist.name }}</h3>
+          <button class="btn-view-details" @click="viewPlaylist(playlist.playlistId)">View Details</button>
+          <!-- <button class="btn-view-details" @click="removePlaylist(playlist.playlistId)">Remove Event</button> -->
         </div>
       </div>
     </div>
@@ -82,6 +81,7 @@ export default {
   created() {
     // Fetch events when the component loads
     this.fetchEvents();
+    this.fetchSavedPlaylists();
   },
   methods: {
     hideEvent() {
@@ -122,7 +122,30 @@ export default {
       console.log('View event details for ID:', eventId);
       this.$router.push({ name: "EventView", params: { eventId } });
       // Add navigation or modal logic here if needed
-    }
+    },
+    viewPlaylist(playlistId) { 
+      console.log("playlistId: " + playlistId);
+      this.$router.push({ name: 'PlaylistView', params: { playlistId: playlistId } });
+    },
+    async fetchSavedPlaylists() {
+      try {
+        const userId = this.$store.state.user?.id; // Make sure the user ID is available
+        if (!userId) {
+          console.warn("User ID is not defined.");
+          return;
+        }
+
+        const response = await axios.get(`/users/${userId}/playlists`);
+        this.savedPlaylists = response.data; // Update the component's data property
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          console.warn("No saved playlists found for this user.");
+        } else {
+          console.error("Error fetching saved playlists:", error);
+        }
+      }
+    },
+
   }
 
   

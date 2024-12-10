@@ -50,7 +50,7 @@
         // if (!this.validateForm()) {
         //   return;
         // }
-  
+          let eventId = 0;
         //ADD EVENT is handled here
             console.log('adding event: '+ this.editEvent);
           // add
@@ -58,6 +58,10 @@
             .addEvent(this.editEvent)
             .then(response => {
               if (response.status === 201) {
+                console.log(response.data);
+                eventId = response.data.id;
+                this.$router.push({ name: "EventView", params: { eventId } });
+
                 // this.$store.commit(
                 //   'SET_NOTIFICATION',
                 //   {
@@ -95,7 +99,7 @@
         // }
       },
       cancelForm() {
-        this.$router.push({ name: 'BoardView', params: { id: this.editCard.boardId } });
+        this.$router.push("/home");
       },
       handleErrorResponse(error, verb) {
         // if (error.response) {

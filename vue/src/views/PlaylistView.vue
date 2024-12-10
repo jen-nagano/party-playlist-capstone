@@ -23,6 +23,8 @@ export default {
 <template>
   <div class="playlist-container">
     <h1>{{ playlist.name }}</h1>
+    <router-link to="/events/:eventId" class="btn-back">Back to Home</router-link>
+
 
   </div>
   <div class="songs-list mt-6">

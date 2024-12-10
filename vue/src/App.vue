@@ -1,61 +1,49 @@
 <template>
   <div id="capstone-app">
-    <div id="nav">
+    <!-- Conditionally render the navbar -->
+    <div id="nav" v-if="showNavbar">
       <div class="nav-container">
-        <!-- Image next to the text -->
+        <!-- Logo Section -->
         <div class="logo-container">
-          <img src="/src/img/nav.png" alt="Logo" class="logo-img">
-          <router-link v-bind:to="{ name: 'home' }" class="nav-link logo">Panda Party Playlist</router-link>
+          <router-link v-bind:to="{ name: 'home' }">
+            <img src="/src/img/nav.png" alt="Logo" class="logo-img" />
+          </router-link>          <h1>Panda Party Playlist</h1>
         </div>
+        <!-- Navigation Links -->
         <div class="nav-links">
-          <router-link v-bind:to="{ name: 'home' }" class="nav-link">Home</router-link>
-         
-          <!-- Only show this if the user is authenticated -->
+          <!-- <router-link v-bind:to="{ name: 'home' }" class="nav-link">Home</router-link> -->
+          <!-- User Greeting -->
           <li v-if="isAuthenticated">
             <span class="user-indicator">Welcome, {{ username }}</span>
           </li>
-         
-          <!-- Logout link, only visible if user is authenticated -->
+          <!-- Logout Link -->
           <router-link v-if="isAuthenticated" v-bind:to="{ name: 'logout' }" class="nav-link">Logout</router-link>
         </div>
       </div>
     </div>
+    <!-- Main Content -->
     <router-view />
   </div>
 </template>
 
-
 <script>
 export default {
   computed: {
+    // Logic to determine whether to show the navbar
+    showNavbar() {
+      return !this.$route.meta.hideNavbar;
+    },
+    // Check if the user is authenticated
     isAuthenticated() {
       return this.$store.state.token !== ''; // Check if token exists
     },
+    // Get the username from the store or fallback to 'Guest'
     username() {
-      return this.$store.state.user?.username || 'Guest'; // Display username or default to 'Guest'
-    },
-  },
-
-
-  mounted() {
-    // Check the authentication status when the component mounts
-    this.checkAuthentication();
-  },
-  methods: {
-    // This method will check if the user is authenticated and set the username
-   
-   
-    logout() {
-      // Handle logout logic here (clear token, username, etc.)
-      this.$store.commit('clearAuthData'); // Example, implement according to your Vuex setup
-      this.isAuthenticated = false;
-      this.username = "";
-      this.$router.push('/login'); // Redirect to login page
+      return this.$store.state.user?.username || 'Guest';
     }
   }
 };
 </script>
-
 
 <style scoped>
 /* Global Dark Theme */
@@ -64,10 +52,9 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(to right, #070707, #fcfafb); /* Vibrant pink gradient */
+  background: linear-gradient(to right, #0b0b0b, #181616); /* Vibrant pink gradient */
   color: #ecf0f1;
 }
-
 
 #nav {
   background-color: #741577;
@@ -79,12 +66,14 @@ export default {
   top: 0;
   z-index: 1000;
 
-
   /* Neon border effect */
   border: 2px solid transparent;
   box-shadow: 0 0 15px 5px rgba(255, 105, 180, 0.9), 0 0 20px 10px rgba(255, 105, 180, 0.7); /* Glowing neon effect */
 }
 
+li {
+  list-style-type: none; /* Removes the default bullet */
+}
 
 .nav-container {
   display: flex;
@@ -92,12 +81,10 @@ export default {
   align-items: center;
 }
 
-
 .logo-container {
   display: flex;
   align-items: center;
 }
-
 
 .logo-img {
   width: 101px; /* Increased size by 45% */
@@ -105,7 +92,6 @@ export default {
   margin-right: 15px; /* Space between image and text */
   transition: transform 0.3s ease;
 }
-
 
 .logo {
   font-size: 2.5rem;
@@ -115,18 +101,15 @@ export default {
   transition: color 0.3s ease, transform 0.3s ease;
 }
 
-
 .logo:hover {
   color: #ff6f61; /* Bright neon red color */
   transform: scale(1.1) rotate(-5deg);
   text-shadow: 0 0 10px #ff6f61, 0 0 20px #ff6f61; /* Glowing effect */
 }
 
-
 .nav-links {
   display: flex;
 }
-
 
 .nav-link {
   margin-left: 30px;
@@ -138,7 +121,6 @@ export default {
   padding: 5px 10px;
   transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
 }
-
 
 .nav-link:before {
   content: "";
@@ -153,30 +135,25 @@ export default {
   transition: transform 0.25s ease-in-out;
 }
 
-
 .nav-link:hover {
   color: #db34a9; /* Vibrant neon blue */
   transform: scale(1.1) rotate(3deg);
   text-shadow: 0 0 15px #3498db, 0 0 30px #3498db; /* Glowing neon blue */
 }
 
-
 .nav-link:hover:before {
   transform: scaleX(1);
   transform-origin: bottom left;
 }
 
-
 .nav-links .nav-link {
   margin-left: 40px;
 }
-
 
 #nav:hover {
   background-color: #0d0d0e;
   transform: translateY(-5px); /* 3D floating effect */
 }
-
 
 /* Add styles for user-indicator */
 .user-indicator {
@@ -184,7 +161,6 @@ export default {
   font-size: 1.1rem;
   margin-left: 20px;
 }
-
 
 button {
   background-color: #8e44ad;
@@ -195,11 +171,9 @@ button {
   border-radius: 5px;
 }
 
-
 button:hover {
   background-color: #6a2c9c;
 }
-
 
 /* Responsive Design */
 @media screen and (max-width: 768px) {
@@ -208,18 +182,15 @@ button:hover {
     align-items: center;
   }
 
-
   .nav-links {
     flex-direction: column;
     margin-top: 10px;
   }
 
-
   .nav-link {
     margin: 15px 0;
   }
 }
-
 
 router-view {
   flex-grow: 1;
@@ -234,7 +205,6 @@ router-view {
   animation: fadeUp 1s ease forwards;
 }
 
-
 @keyframes fadeUp {
   to {
     opacity: 1;
@@ -242,4 +212,3 @@ router-view {
   }
 }
 </style>
-

@@ -1,5 +1,5 @@
-import { createRouter as createRouter, createWebHistory } from 'vue-router'
-import { useStore } from 'vuex'
+import { createRouter, createWebHistory } from 'vue-router';
+import { useStore } from 'vuex';
 
 // Import components
 import HomeView from '../views/HomeView.vue';
@@ -10,95 +10,76 @@ import EventView from '../views/EventView.vue';
 import PlaylistView from '../views/PlaylistView.vue';
 import LandingPageView from '../views/LandingPageView.vue';
 
-/**
- * The Vue Router is used to "direct" the browser to render a specific view component
- * inside of App.vue depending on the URL.
- *
- * It also is used to detect whether or not a route requires the user to have first authenticated.
- * If the user has not yet authenticated (and needs to) they are redirected to /login
- * If they have (or don't need to) they're allowed to go about their way.
- */
 const routes = [
   {
-    path: "/",
-    name: "landingPage",
+    path: '/',
+    name: 'landingPage',
     component: LandingPageView,
-    meta: {
-      requiresAuth: false
-    }
+    meta: { requiresAuth: false, hideNavbar: true }, // Navbar hidden
   },
   {
     path: '/home',
     name: 'home',
     component: HomeView,
-    meta: {
-      requiresAuth: true
-    }
+    meta: { requiresAuth: true, hideNavbar: false }, // Navbar visible
   },
   {
-    path: "/login",
-    name: "login",
+    path: '/login',
+    name: 'login',
     component: LoginView,
-    meta: {
-      requiresAuth: false
-    }
+    meta: { requiresAuth: false, hideNavbar: true }, // Navbar hidden
   },
   {
-    path: "/logout",
-    name: "logout",
+    path: '/logout',
+    name: 'logout',
     component: LogoutView,
-    meta: {
-      requiresAuth: false
-    }
+    meta: { requiresAuth: false, hideNavbar: true }, // Navbar hidden
   },
   {
-    path: "/register",
-    name: "register",
+    path: '/register',
+    name: 'register',
     component: RegisterView,
-    meta: {
-      requiresAuth: false
-    }
+    meta: { requiresAuth: false, hideNavbar: true }, // Navbar hidden
   },
   {
-    path: "/events/:eventId", // Include the dynamic parameter
-    name: "EventView",
+    path: '/events/:eventId',
+    name: 'EventView',
     component: EventView,
-    props: true, // Pass route params as props to the component
-    meta: {
-      requiresAuth: true
-    }
+    props: true,
+    meta: { requiresAuth: true, hideNavbar: false }, // Navbar visible
   },
-
   {
     path: '/playlists/:playlistId',
     name: 'PlaylistView',
     component: PlaylistView,
     props: true,
-    meta: {
-      requiresAuth: false
-    }
-  }
+    meta: { requiresAuth: false, hideNavbar: false }, // Navbar visible
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: LandingPageView, // Redirect to Landing Page for undefined routes
+    meta: { requiresAuth: false, hideNavbar: true },
+  },
 ];
 
 // Create the router
 const router = createRouter({
   history: createWebHistory(),
-  routes: routes
+  routes,
 });
 
+// Navigation guard to check authentication
 router.beforeEach((to) => {
-
-  // Get the Vuex store
   const store = useStore();
 
-  // Determine if the route requires Authentication
-  const requiresAuth = to.matched.some(x => x.meta.requiresAuth);
+  // Determine if the route requires authentication
+  const requiresAuth = to.matched.some((x) => x.meta.requiresAuth);
 
-  // If it does and they are not logged in, send the user to "/login"
+  // If authentication is required and the user is not logged in, redirect to login
   if (requiresAuth && store.state.token === '') {
-    return {name: "login"};
+    return { name: 'login' };
   }
-  // Otherwise, do nothing and they'll go to their next destination
 });
 
 export default router;

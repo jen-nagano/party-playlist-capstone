@@ -6,6 +6,7 @@
     <p><strong>End Time:</strong> {{ event.endTime }}</p>
     <p><strong>Date:</strong> {{ event.date }}</p>
     <h3>Playlists</h3>
+    <router-link to="/home" class="btn-back">Back to Home</router-link>
     <div class="playlist-tiles">
       <div
         v-for="playlist in playlists"

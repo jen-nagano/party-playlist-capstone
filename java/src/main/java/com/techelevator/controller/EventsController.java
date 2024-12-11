@@ -121,6 +121,16 @@ public class EventsController {
         }
     }
 
+    @RequestMapping(path = "/playlists/{playlistId}/events/{eventId}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeEventFromPlaylist(@PathVariable int playlistId, @PathVariable int eventId) {
+        try {
+            eventDao.removeEventFromPlaylist(playlistId, eventId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to remove event from playlist", e);
+        }
+    }
+
     @PostMapping("/test-events")
     public Event testEventParsing(@RequestBody Event event) {
         System.out.println("Parsed event: " + event);

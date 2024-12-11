@@ -99,7 +99,7 @@
         // }
       },
       cancelForm() {
-        this.$router.push("/home");
+        this.$emit('cancel');
       },
       handleErrorResponse(error, verb) {
         // if (error.response) {

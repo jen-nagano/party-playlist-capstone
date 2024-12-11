@@ -2,6 +2,7 @@ package com.techelevator.dao;
 
 import com.techelevator.exception.DaoException;
 import com.techelevator.model.Event;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -94,6 +95,21 @@ public class JdbcEventDao implements EventDao {
     public void deleteEventForUser(int userId, int eventId) {
         String sql = "DELETE FROM user_event WHERE user_id = ? AND event_id = ?";
         jdbcTemplate.update(sql, userId, eventId);
+    }
+
+    public void removeEventFromPlaylist(int playlistId, int eventId) {
+        String sql = "DELETE FROM event_playlist WHERE playlist_id = ? AND event_id = ?";
+
+        try {
+            int rowsAffected = jdbcTemplate.update(sql, playlistId, eventId);
+            if (rowsAffected == 0) {
+                throw new DaoException("No matching connection found for the given playlist ID and event ID.");
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to the database.", e);
+        } catch (DataAccessException e) {
+            throw new DaoException("Failed to remove event from playlist.", e);
+        }
     }
 
     private Event mapRowToEvent(SqlRowSet results) {

@@ -17,6 +17,7 @@
         <p>{{ playlist.description }}</p>
         <button @click="viewPlaylist(playlist.playlistId)" class="btn-view-playlist">View Playlist</button>
         <button @click="savePlaylist(playlist.playlistId)" class="btn-view-playlist">Save Playlist</button>
+        <button @click="removePlaylist(playlist.playlistId)" class="btn-view-playlist">Remove Playlist</button>
       </div>
       <p v-if="playlists.length === 0">No playlists found for this event.</p>
       <div>
@@ -148,6 +149,27 @@ export default {
       link.href = this.qrCode;
       link.download = `event-${this.event.name}-qr-code.png`;
       link.click();
+    },
+    async removePlaylist(playlistId) {
+
+      try {
+        // Make the DELETE request to the backend
+        this.playlists = this.playlists.filter(playlist => playlist.id !== playlistId);
+
+        const eventId = this.$route.params.eventId;
+        const response = await axios.delete(`/playlists/${playlistId}/events/${eventId}`);
+
+        if (response.status === 204) {
+          //alert('Successfully removed the event from the playlist.');
+          await this.fetchPlaylists();
+          window.location.reload();
+        } else {
+          alert('Unexpected response from the server.');
+        }
+      } catch (error) {
+        console.error('Failed to remove the event from the playlist:', error);
+        alert('An error occurred while trying to remove the event from the playlist. Please try again.');
+      }
     }
   }
 };

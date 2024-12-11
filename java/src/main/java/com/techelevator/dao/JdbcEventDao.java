@@ -112,6 +112,16 @@ public class JdbcEventDao implements EventDao {
         }
     }
 
+    public void updateEvent(int eventId, Event event) {
+        String sql = "UPDATE event SET name = ?, date = ?, start_time = ?, end_time = ?, creator = ? WHERE event_id = ?";
+        System.out.println(sql);
+        try {
+            jdbcTemplate.update(sql, event.getName(), event.getDate(), event.getStartTime(), event.getEndTime(), event.getCreator(), eventId);
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to update event", e);
+        }
+    }
+
     private Event mapRowToEvent(SqlRowSet results) {
         Event event = new Event();
 

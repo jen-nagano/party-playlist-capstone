@@ -137,4 +137,17 @@ public class EventsController {
         return event;
     }
 
+    @RequestMapping(path = "/events/{eventId}", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.NO_CONTENT)  // 204 No Content means the update was successful but no data is returned
+    public void updateEvent(@PathVariable int eventId, @RequestBody Event event) {
+        System.out.println("Trying to update this event: " + event);
+        try {
+            eventDao.updateEvent(eventId, event);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update event", e);
+        }
+    }
+
+
+
 }

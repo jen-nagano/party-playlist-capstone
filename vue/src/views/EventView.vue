@@ -151,24 +151,26 @@ export default {
       link.click();
     },
     async removePlaylist(playlistId) {
+      var result = confirm("Are you sure you want to remove this playlist from the event?");
+      if (result) {
+        try {
+          // Make the DELETE request to the backend
+          this.playlists = this.playlists.filter(playlist => playlist.id !== playlistId);
 
-      try {
-        // Make the DELETE request to the backend
-        this.playlists = this.playlists.filter(playlist => playlist.id !== playlistId);
+          const eventId = this.$route.params.eventId;
+          const response = await axios.delete(`/playlists/${playlistId}/events/${eventId}`);
 
-        const eventId = this.$route.params.eventId;
-        const response = await axios.delete(`/playlists/${playlistId}/events/${eventId}`);
-
-        if (response.status === 204) {
-          //alert('Successfully removed the event from the playlist.');
-          await this.fetchPlaylists();
-          window.location.reload();
-        } else {
-          alert('Unexpected response from the server.');
+          if (response.status === 204) {
+            //alert('Successfully removed the event from the playlist.');
+            await this.fetchPlaylists();
+            window.location.reload();
+          } else {
+            alert('Unexpected response from the server.');
+          }
+        } catch (error) {
+          console.error('Failed to remove the event from the playlist:', error);
+          alert('An error occurred while trying to remove the event from the playlist. Please try again.');
         }
-      } catch (error) {
-        console.error('Failed to remove the event from the playlist:', error);
-        alert('An error occurred while trying to remove the event from the playlist. Please try again.');
       }
     }
   }

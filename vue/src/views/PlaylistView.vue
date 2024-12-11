@@ -1,46 +1,30 @@
 <template>
-  <div class="playlist-container">
-    <h1>{{ playlist.name }}</h1>
-    <button @click="navigateBack">Back to Home</button>
-    <!-- <router-link to="/events/:eventId" class="btn-back">Back to Home</router-link> -->
-
-
-  </div>
-  <!-- <div class="playlist-container">
-    <ul ref="playlist" class="playlist">
-      <li v-for="(song, index) in songs" :key="song.id" class="playlist-item">
-        {{ song.name }}
-      </li>
-    </ul>
-    <button @click="saveOrder">Save Order</button>
-  </div> -->
-  <div class="songs-list mt-6">
-      <h2 class="text-2xl font-semibold mb-4">Current Playlist Songs:</h2>
-      <div ref="playlist" class="playlist">
-        <div
-          v-for="(song, index) in playlistSongs"
-          :key="song.songId"
-          class="song-card"
-        >
-          <span class="drag-handle">=</span> 
-          <img :src="song.imgUrl" alt="Album Art" />
-          <div class="song-info">
-            <p class="song-title">{{ song.title }}</p>
-            <p class="song-artist">{{ song.artist }}</p>
-            <p class="song-duration">{{ this.getDuration(song.duration) }}</p>
+  <div class="main-container">
+    <!-- Playlist Section -->
+    <div class="playlist-container">
+      <!-- Centered Playlist Name -->
+      <h1 class="playlist-name">{{ playlist.name }}</h1>
+      <!-- Centered Back to Home Button -->
+      <button @click="navigateBack" class="back-button">Back to Home</button>
+      <div class="songs-list mt-6">
+        <h2 class="text-2xl font-semibold mb-4">Current Playlist Songs:</h2>
+        <div ref="playlist" class="playlist">
+          <div v-for="(song, index) in playlistSongs" :key="song.songId" class="song-card">
+            <span class="drag-handle">≡</span>
+            <img :src="song.imgUrl" alt="Album Art" />
+            <div class="song-info">
+              <p class="song-title">{{ song.title }}</p>
+              <p class="song-artist">{{ song.artist }}</p>
+              <p class="song-duration">{{ this.getDuration(song.duration) }}</p>
+            </div>
+            <button @click="removeSong(song.songId)">Remove Song</button>
           </div>
-          <button @click="removeSong(song.songId)">Remove Song</button>
-          <!-- <button @click="playSong(song.uri)">Play Song</button> -->
-        
         </div>
-
       </div>
-      <!-- <button @click="saveOrder">Save Order</button> -->
     </div>
-  <div class="playlist-container">
-    <h1 class="text-center text-4xl font-bold py-4">Search for songs to add to your playlist.</h1>
+    <!-- Search Section -->
     <div class="search-section p-4 bg-gray-800 rounded-lg">
-      <!-- <h2 class="text-2xl text-white mb-2">Search for a song and play it!</h2> -->
+      <h1 class="text-center text-4xl font-bold py-4">Search for songs to add to your playlist.</h1>
       <div class="flex items-center space-x-2">
         <input
           v-model="searchQuery"
@@ -55,40 +39,15 @@
           Search
         </button>
       </div>
-    </div>
-    <!-- Playback State Section -->
-    <!-- <div class="playback-state mt-6">
-      <h2 class="text-2xl font-semibold mb-4">Playback State</h2>
-      <button
-        @click="getPlaybackState"
-        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
-      >
-        Refresh Playback State
-      </button>
-      <div v-if="playbackState" class="playback-info mt-4">
-        <p><strong>Device:</strong> {{ playbackState.device.name }} ({{ playbackState.device.type }})</p>
-        <p><strong>Volume:</strong> {{ playbackState.device.volume_percent }}%</p>
-        <p><strong>Now Playing:</strong> {{ playbackState.item.name }} by {{ playbackState.item.artists[0].name }}</p>
-        <p><strong>Progress:</strong> {{ formatTime(playbackState.progress_ms) }} / {{ formatTime(playbackState.item.duration_ms) }}</p>
-        <p><strong>Playing:</strong> {{ playbackState.is_playing ? "Yes" : "No" }}</p>
-      </div>
-    </div> -->
-    <!-- Songs List Section -->
-    <div class="songs-list mt-6">
-      <!-- <h2 class="text-2xl font-semibold mb-4">Search for a song title or artist, then add songs to your playlist.</h2> -->
-      <div
-        v-for="song in songs"
-        :key="song.id"
-        class="song-card"
-      >
-        <img :src="song.albumArt" alt="Album Art" />
-        <div class="song-info">
-          <p class="song-title">{{ song.title }}</p>
-          <p class="song-artist">{{ song.artist }}</p>
+      <div class="songs-list mt-6">
+        <div v-for="song in songs" :key="song.id" class="song-card">
+          <img :src="song.albumArt" alt="Album Art" />
+          <div class="song-info">
+            <p class="song-title">{{ song.title }}</p>
+            <p class="song-artist">{{ song.artist }}</p>
+          </div>
+          <button @click="addSong(song)">Add to Playlist</button>
         </div>
-        <button @click="addSong(song)">Add to Playlist</button>
-        <!-- <button @click="playSong(song.uri)">Play Song</button> -->
-        
       </div>
     </div>
   </div>
@@ -96,8 +55,7 @@
 <script>
 import axios from "axios";
 import EventService from "../services/EventService";
-import Sortable from 'sortablejs';
-
+import Sortable from "sortablejs";
 export default {
   props: {
     playlistId: {
@@ -106,18 +64,18 @@ export default {
     },
     eventId: {
       type: Number,
-      required: true, // Set this to false if eventId is optional
-      default: 0, // Default to 0 for unattached playlists
-    }
+      required: true,
+      default: 0,
+    },
   },
   data() {
     return {
       playlist: {},
-      searchQuery: "", // User's search input
-      songs: [], // Search results from Spotify
-      playlistSongs: [], // songs in playlist
-      playbackState: null, // Playback state
-      spotifyAccessToken: null, // Spotify API token
+      searchQuery: "",
+      songs: [],
+      playlistSongs: [],
+      playbackState: null,
+      spotifyAccessToken: null,
     };
   },
   created() {
@@ -125,41 +83,35 @@ export default {
     this.fetchSongs();
   },
   mounted() {
-    this.getSpotifyToken(); // Fetch the token when the component is mounted
-
+    this.getSpotifyToken();
     Sortable.create(this.$refs.playlist, {
       animation: 150,
-      handle: '.drag-handle', // Only allow dragging on the handle (the = symbol)
+      handle: ".drag-handle",
       onEnd: this.updateOrder,
     });
   },
   methods: {
-  // Fetch details of the playlist
-  async fetchPlaylistDetails() {
-    try {
-      //const playlistId = this.$route.params.playlistId;
-      const response = await axios.get(`/playlists/${this.playlistId}`);
-      this.playlist = response.data;
-    } catch (error) {
-      console.error("Error fetching playlist details:", error);
-      alert("Failed to load playlist details.");
-    }
-  },
-
-  // Fetch playlists for the event
-  async fetchSongs() {
-    try {
-      //const playlistId = this.$route.params.playlistId;
-      const response = await axios.get(`/playlists/${this.playlistId}/songs`);
-      this.playlistSongs = response.data;
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        console.warn("No songs found for this playlist.");
-      } else {
-        console.error("Error fetching songs:", error);
+    async fetchPlaylistDetails() {
+      try {
+        const response = await axios.get(`/playlists/${this.playlistId}`);
+        this.playlist = response.data;
+      } catch (error) {
+        console.error("Error fetching playlist details:", error);
+        alert("Failed to load playlist details.");
       }
-    }
-  },
+    },
+    async fetchSongs() {
+      try {
+        const response = await axios.get(`/playlists/${this.playlistId}/songs`);
+        this.playlistSongs = response.data;
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          console.warn("No songs found for this playlist.");
+        } else {
+          console.error("Error fetching songs:", error);
+        }
+      }
+    },
     async fetchSpotifyToken() {
       try {
         const response = await axios.get("http://localhost:9000/spotify/token");
@@ -167,7 +119,6 @@ export default {
         const expiresIn = response.data.expires_in * 1000;
         localStorage.setItem("spotify_access_token", this.spotifyAccessToken);
         localStorage.setItem("spotify_token_expiry", Date.now() + expiresIn);
-        console.log("Spotify token fetched:", this.spotifyAccessToken);
       } catch (error) {
         console.error("Error fetching Spotify token:", error);
       }
@@ -175,16 +126,13 @@ export default {
     async getSpotifyToken() {
       const tokenExpiry = localStorage.getItem("spotify_token_expiry");
       if (!tokenExpiry || Date.now() > tokenExpiry) {
-        console.log("Token expired or missing. Fetching a new one...");
         await this.fetchSpotifyToken();
       } else {
         this.spotifyAccessToken = localStorage.getItem("spotify_access_token");
-        console.log("Using existing token:", this.spotifyAccessToken);
       }
     },
     async searchSongs() {
       await this.getSpotifyToken();
-      //console.log(this.spotifyAccessToken);
       if (!this.spotifyAccessToken) {
         console.error("Spotify token not available.");
         return;
@@ -206,119 +154,36 @@ export default {
           artist: track.artists.map((artist) => artist.name).join(", "),
           albumArt: track.album.images[0]?.url,
           uri: track.uri,
-          duration: track.duration_ms
+          duration: track.duration_ms,
         }));
-        console.log("Search results:", this.songs);
       } catch (error) {
         console.error("Error searching Spotify:", error);
       }
     },
-    async playSong(songUri) {
-      await this.getSpotifyToken();
-      if (!this.spotifyAccessToken) {
-        console.error("Spotify token not available.");
-        return;
-      }
-      try {
-        // Get available devices
-        const devicesResponse = await axios.get("https://api.spotify.com/v1/me/player/devices", {
-          headers: {
-            Authorization: `Bearer ${this.spotifyAccessToken}`,
-          },
-        });
-        const devices = devicesResponse.data.devices;
-        if (!devices.length) {
-          alert("No active Spotify devices found. Open Spotify on a device and try again.");
-          return;
-        }
-        // Start playback on the first available device
-        const deviceId = devices[0].id; // Use the first available device
-        await axios.put(
-          `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
-          { uris: [songUri] }, // Play the specified song
-          {
-            headers: {
-              Authorization: `Bearer ${this.spotifyAccessToken}`,
-            },
-          }
-        );
-        console.log("Playback started on device:", deviceId);
-      } catch (error) {
-        console.error("Error playing song:", error.response?.data || error.message);
-      }
-    },
     addSong(song) {
-      console.log(song);
-      const plainSong = JSON.parse(JSON.stringify(song));
-      console.log(plainSong);
       const mySong = {
-        title:song.title,
-        artist:song.artist,
-        duration:song.duration,
-        spotifyId:song.uri.substring(14),
-        imgUrl:song.albumArt
-      }
-      console.log(mySong);
-      EventService
-        .addSongToPlaylist(mySong, this.playlist.playlistId)
-        .then(response => {
-          if (response.status === 201) {
-            // this.$store.commit(
-            //   'SET_NOTIFICATION',
-            //   {
-            //     message: 'A new event was added.',
-            //     type: 'success'
-            //   }
-            // );
-            console.log(response.data);
-            this.fetchSongs();
-          }
-        })
-        .catch(error => {
-          console.log(error, 'adding');
-        });
-    },
-    async removeSong(songId) {
-      console.log("Removing song with ID:", songId);
-      try {
-        await axios.delete(`/playlists/${this.playlistId}/songs/${songId}`);
-        console.log(`Song with ID ${songId} removed from playlist ${this.playlistId}`);
-        // Refresh the list of songs in the playlist
+        title: song.title,
+        artist: song.artist,
+        duration: song.duration,
+        spotifyId: song.uri.substring(14),
+        imgUrl: song.albumArt,
+      };
+      EventService.addSongToPlaylist(mySong, this.playlist.playlistId).then(() => {
         this.fetchSongs();
-      } catch (error) {
+      });
+    },
+    removeSong(songId) {
+      axios.delete(`/playlists/${this.playlistId}/songs/${songId}`).then(() => {
+        this.fetchSongs();
+      }).catch((error) => {
         console.error("Error removing song from playlist:", error);
-        alert("Failed to remove the song from the playlist.");
-      }
+      });
     },
-
     getDuration(duration_ms) {
-      let duration = Math.round(duration_ms/1000);
-      let minutes = Math.round(duration/60);
-      let seconds = duration%60;
-      return minutes + ":" + seconds;
-    },
-    async getPlaybackState() {
-      await this.getSpotifyToken();
-      if (!this.spotifyAccessToken) {
-        console.error("Spotify token not available.");
-        return;
-      }
-      try {
-        const response = await axios.get("https://api.spotify.com/v1/me/player", {
-          headers: {
-            Authorization: `Bearer ${this.spotifyAccessToken}`,
-          },
-        });
-        this.playbackState = response.data;
-        console.log("Playback state:", this.playbackState);
-      } catch (error) {
-        console.error("Error fetching playback state:", error);
-      }
-    },
-    formatTime(milliseconds) {
-      const minutes = Math.floor(milliseconds / 60000);
-      const seconds = Math.floor((milliseconds % 60000) / 1000);
-      return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+      let duration = Math.round(duration_ms / 1000);
+      let minutes = Math.floor(duration / 60);
+      let seconds = duration % 60;
+      return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
     },
     updateOrder(evt) {
       const movedItem = this.playlistSongs.splice(evt.oldIndex, 1)[0];
@@ -328,38 +193,62 @@ export default {
     async saveOrder() {
       try {
         const requestBody = this.playlistSongs.map((song, index) => ({
-            songId: song.songId,
-            position: index + 1,
-          }));
-
-        console.log("Request Body:", requestBody);  // Log the data being sent
-
+          songId: song.songId,
+          position: index + 1,
+        }));
         await axios.put(`/playlists/${this.playlist.playlistId}/songs/order`, requestBody);
-        //alert('Order saved successfully!');
       } catch (error) {
-        console.error('Error saving order:', error);
-        alert('Failed to save the order. Please try again.');
+        console.error("Error saving order:", error);
       }
     },
     navigateBack() {
-      if (this.eventId == 0) {
-        // route to home view
-        this.$router.push({ name: 'home' });
-
+      if (this.eventId === 0) {
+        this.$router.push({ name: "home" });
       } else {
-        // route to the correct event
-        this.$router.push({ name: 'EventView', params: { playlistId: this.playlist.playlistId, eventId: this.eventId }, });
+        this.$router.push({ name: "EventView", params: { playlistId: this.playlist.playlistId, eventId: this.eventId } });
       }
-    }
+    },
   },
-
-
 };
 </script>
 <style scoped>
+.main-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  justify-content: space-between;
+}
 .playlist-container {
-  max-width: 800px;
-  margin: 0 auto;
+  flex: 0 0 60%; /* 60% width for playlist section */
+}
+.playlist-name {
+  text-align: center;
+  margin: 0;
+  padding-top: 5%;
+}
+.back-button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color:rgba(255, 105, 180, 0.9);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+}
+.back-button:hover {
+  background-color: #f0ff1bf1;
+  color: black;
+}
+.search-section {
+  flex: 0 0 35%; /* 35% width for search section */
+  background-color: #00000000;
+  border-radius: 8px;
+  padding: 16px;
+}
+.songs-list {
+  margin-top: 20px;
 }
 .song-card {
   display: flex;
@@ -369,11 +258,11 @@ export default {
   margin-bottom: 8px;
   background-color: #070707;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(71, 241, 219, 0.808);
 }
 .song-card img {
-  width: 50px;
-  height: 50px;
+  width: 100px;
+  height: 100px;
   border-radius: 4px;
 }
 .song-card .song-info {
@@ -382,13 +271,23 @@ export default {
 button {
   padding: 4px 8px;
   font-size: 14px;
-  background-color: #28A745;
-  color: white;
+  background-color: rgba(255, 105, 180, 0.9);
+  color: rgb(255, 255, 255);
   border: none;
   border-radius: 4px;
+  /* box-shadow: 0 4px 6px rgba(254, 255, 255, 0.808); */
 }
 button:hover {
-  background-color: #218838;
+  background-color: #f0ff1bf1;
+  color: black;
+}
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+  }
+  .playlist-container, .search-section {
+    flex: 0 0 100%;
+  }
 }
 </style>
 

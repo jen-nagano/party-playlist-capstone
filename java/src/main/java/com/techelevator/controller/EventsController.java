@@ -111,6 +111,16 @@ public class EventsController {
         return events;
     }
 
+    @RequestMapping(path = "/users/{userId}/events/{eventId}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteEventForUser(@PathVariable int userId, @PathVariable int eventId) {
+        try {
+            eventDao.deleteEventForUser(userId, eventId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete event for user", e);
+        }
+    }
+
     @PostMapping("/test-events")
     public Event testEventParsing(@RequestBody Event event) {
         System.out.println("Parsed event: " + event);

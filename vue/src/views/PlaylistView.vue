@@ -1,25 +1,3 @@
-<!--
-<template>
-  <div class="playlist">
-    <h1>Playlist</h1>
-    <p>Search for a song.</p>
-    <SearchSong />
-    
-  </div>
-</template>
-
-<script>
-import SearchSong from '../components/SearchSong.vue';
-
-export default {
-  name: 'PlaylistView',
-  components:{
-    SearchSong
-  }
-};
-</script> 
--->
-
 <template>
   <div class="playlist-container">
     <h1>{{ playlist.name }}</h1>
@@ -27,23 +5,36 @@ export default {
 
 
   </div>
+  <!-- <div class="playlist-container">
+    <ul ref="playlist" class="playlist">
+      <li v-for="(song, index) in songs" :key="song.id" class="playlist-item">
+        {{ song.name }}
+      </li>
+    </ul>
+    <button @click="saveOrder">Save Order</button>
+  </div> -->
   <div class="songs-list mt-6">
       <h2 class="text-2xl font-semibold mb-4">Current Playlist Songs:</h2>
-      <div
-        v-for="song in playlistSongs"
-        :key="song.songId"
-        class="song-card"
-      >
-        <img :src="song.imgUrl" alt="Album Art" />
-        <div class="song-info">
-          <p class="song-title">{{ song.title }}</p>
-          <p class="song-artist">{{ song.artist }}</p>
-          <p class="song-duration">{{ this.getDuration(song.duration) }}</p>
-        </div>
-        <button @click="removeSong(song.songId)">Remove Song</button>
-        <!-- <button @click="playSong(song.uri)">Play Song</button> -->
+      <div ref="playlist" class="playlist">
+        <div
+          v-for="(song, index) in playlistSongs"
+          :key="song.songId"
+          class="song-card"
+        >
+          <span class="drag-handle">=</span> 
+          <img :src="song.imgUrl" alt="Album Art" />
+          <div class="song-info">
+            <p class="song-title">{{ song.title }}</p>
+            <p class="song-artist">{{ song.artist }}</p>
+            <p class="song-duration">{{ this.getDuration(song.duration) }}</p>
+          </div>
+          <button @click="removeSong(song.songId)">Remove Song</button>
+          <!-- <button @click="playSong(song.uri)">Play Song</button> -->
         
+        </div>
+
       </div>
+      <button @click="saveOrder">Save Order</button>
     </div>
   <div class="playlist-container">
     <h1 class="text-center text-4xl font-bold py-4">Search for songs to add to your playlist.</h1>
@@ -104,6 +95,7 @@ export default {
 <script>
 import axios from "axios";
 import EventService from "../services/EventService";
+import Sortable from 'sortablejs';
 
 export default {
   props: {
@@ -125,6 +117,15 @@ export default {
   created() {
     this.fetchPlaylistDetails();
     this.fetchSongs();
+  },
+  mounted() {
+    this.getSpotifyToken(); // Fetch the token when the component is mounted
+
+    Sortable.create(this.$refs.playlist, {
+      animation: 150,
+      handle: '.drag-handle', // Only allow dragging on the handle (the = symbol)
+      onEnd: this.updateOrder,
+    });
   },
   methods: {
   // Fetch details of the playlist
@@ -313,10 +314,28 @@ export default {
       const seconds = Math.floor((milliseconds % 60000) / 1000);
       return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
     },
+    updateOrder(evt) {
+      const movedItem = this.playlistSongs.splice(evt.oldIndex, 1)[0];
+      this.playlistSongs.splice(evt.newIndex, 0, movedItem);
+    },
+    async saveOrder() {
+      try {
+        const requestBody = this.playlistSongs.map((song, index) => ({
+            songId: song.songId,
+            position: index + 1,
+          }));
+
+        console.log("Request Body:", requestBody);  // Log the data being sent
+
+        await axios.put(`/playlists/${this.playlist.playlistId}/songs/order`, requestBody);
+        alert('Order saved successfully!');
+      } catch (error) {
+        console.error('Error saving order:', error);
+        alert('Failed to save the order. Please try again.');
+      }
+    },
   },
-  mounted() {
-    this.getSpotifyToken(); // Fetch the token when the component is mounted
-  },
+
 };
 </script>
 <style scoped>

@@ -45,7 +45,8 @@ public class JdbcSongDao implements SongDao {
         String sql = "SELECT s.song_id, s.title, s.artist, s.duration, s.spotify_id, s.img_url " +
                 "FROM song s " +
                 "JOIN playlist_song ps ON s.song_id = ps.song_id " +
-                "WHERE ps.playlist_id = ?;";
+                "WHERE ps.playlist_id = ?" +
+                "ORDER BY ps.position;";
 
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, playlistId);
@@ -61,10 +62,16 @@ public class JdbcSongDao implements SongDao {
 
     @Override
     public void addSongToPlaylist(int playlistId, int songId) {
+        String sqlPos = "SELECT MAX(position) FROM playlist_song WHERE playlist_id = ?";
+        Integer maxPosition = jdbcTemplate.queryForObject(sqlPos, Integer.class, playlistId);
+
+        // If no songs are present, the next position is 1
+        int nextPosition = (maxPosition == null) ? 1 : maxPosition + 1;
+
         String sql = "INSERT INTO playlist_song (playlist_id, song_id, position, up_vote, down_vote) " +
-                "VALUES (?, ?, 1, 0, 0);";
+                "VALUES (?, ?, ?, 0, 0);";
         try {
-            jdbcTemplate.update(sql, playlistId, songId);
+            jdbcTemplate.update(sql, playlistId, songId, nextPosition);
         }
         catch (CannotGetJdbcConnectionException e) {
             throw new DaoException(UNABLE_TO_CONNECT, e);

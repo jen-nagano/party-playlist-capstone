@@ -4,6 +4,7 @@ import com.techelevator.dao.PlaylistDao;
 import com.techelevator.dao.SongDao;
 import com.techelevator.model.Playlist;
 import com.techelevator.model.Song;
+import com.techelevator.model.SongOrderDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -94,6 +95,16 @@ public class PlaylistController {
         }
     }
 
+    @RequestMapping(path = "/users/{userId}/playlists/{playlistId}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePlaylistForUser(@PathVariable int userId, @PathVariable int playlistId) {
+        try {
+            playlistDao.deletePlaylistForUser(userId, playlistId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete playlist for user", e);
+        }
+    }
+
     @RequestMapping(path = "/users/{userId}/playlists", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public List<Playlist> getPlaylistsForUser(@PathVariable int userId) {
@@ -101,6 +112,20 @@ public class PlaylistController {
             return playlistDao.getPlaylistsByUserId(userId);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch playlists for user", e);
+        }
+    }
+
+    @RequestMapping(path = "/playlists/{playlistId}/songs/order", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updatePlaylistOrder(@PathVariable int playlistId, @RequestBody List<SongOrderDto> songOrder) {
+        for (SongOrderDto songDto : songOrder){
+            System.out.println(songDto);
+        }
+
+        try {
+            playlistDao.updatePlaylistOrder(playlistId, songOrder);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update playlist order", e);
         }
     }
 }

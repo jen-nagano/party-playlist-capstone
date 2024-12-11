@@ -9,5 +9,6 @@ public interface EventDao {
     Event getEventById(int eventId);
     List<Event> getEventsByUserAndRole(int userId, String role);
     void addUserEventRelationship(int userId, int eventId, String role);
+    void deleteEventForUser(int userId, int eventId);
 
 }

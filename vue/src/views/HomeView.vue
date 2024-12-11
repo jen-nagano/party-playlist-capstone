@@ -22,7 +22,7 @@
           <h3 class="event-title">{{ event.name }}</h3>
           <p class="event-description">{{ event.description }}</p>
           <button class="btn-view-details" @click="viewEvent(event.id)">View Details</button>
-          <button class="btn-view-details" @click="removeEvent(event.id)">Remove Event</button>
+          <button class="btn-view-details" @click="deleteEvent(event.id)">Remove Event</button>
         </div>
       </div>
 
@@ -54,7 +54,7 @@
         <div v-for="playlist in savedPlaylists" :key="playlist.id" class="event-tile">
           <h3 class="event-title">{{ playlist.name }}</h3>
           <button class="btn-view-details" @click="viewPlaylist(playlist.playlistId)">View Details</button>
-          <!-- <button class="btn-view-details" @click="removePlaylist(playlist.playlistId)">Remove Event</button> -->
+          <button class="btn-view-details" @click="removePlaylist(playlist.playlistId)">Remove Playlist</button>
         </div>
       </div>
     </div>
@@ -145,7 +145,52 @@ export default {
         }
       }
     },
+    async removePlaylist(playlistId) {
+      var result = confirm("Are you sure you want to delete this playlist?");
+      if (result) {
+        //Logic to delete the item
+        const userId = this.$store.state.user?.id; // Make sure the user ID is available
+        if (!userId) {
+          console.warn("User ID is not defined.");
+          return;
+        }
+        try {
+          const response = await axios.delete(`/users/${userId}/playlists/${playlistId}`);
+          if (response.status === 204) {
+            console.log('Playlist successfully deleted for the user.');
+          } else {
+            console.warn('Unexpected response status:', response.status);
+          }
+          this.fetchSavedPlaylists();
+        } catch (error) {
+          console.error('Error deleting playlist for user:', error.response?.data || error.message);
+          throw error; // Rethrow to handle higher-level errors if needed
+        }
+      }
 
+    },
+    async deleteEvent(eventId) {
+      var result = confirm("Are you sure you want to delete this event?");
+      if (result) {
+        const userId = this.$store.state.user?.id; // Make sure the user ID is available
+        if (!userId) {
+          console.warn("User ID is not defined.");
+          return;
+        }
+        try {
+          const response = await axios.delete(`/users/${userId}/events/${eventId}`);
+          if (response.status === 204) {
+            console.log('Event successfully deleted for the user.');
+          } else {
+            console.warn('Unexpected response status:', response.status);
+          }
+          this.fetchEvents();
+        } catch (error) {
+          console.error('Error deleting event for user:', error.response?.data || error.message);
+          throw error; // Rethrow to handle higher-level errors if needed
+        }
+      }
+    }
   }
 
   

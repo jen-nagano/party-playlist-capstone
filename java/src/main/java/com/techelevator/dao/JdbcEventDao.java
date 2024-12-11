@@ -90,6 +90,12 @@ public class JdbcEventDao implements EventDao {
         }
     }
 
+    @Override
+    public void deleteEventForUser(int userId, int eventId) {
+        String sql = "DELETE FROM user_event WHERE user_id = ? AND event_id = ?";
+        jdbcTemplate.update(sql, userId, eventId);
+    }
+
     private Event mapRowToEvent(SqlRowSet results) {
         Event event = new Event();
 

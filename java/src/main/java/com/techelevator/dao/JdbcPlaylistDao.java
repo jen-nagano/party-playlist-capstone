@@ -3,6 +3,7 @@ package com.techelevator.dao;
 import com.techelevator.exception.DaoException;
 import com.techelevator.model.Event;
 import com.techelevator.model.Playlist;
+import com.techelevator.model.SongOrderDto;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -82,6 +83,16 @@ public class JdbcPlaylistDao implements PlaylistDao{
     }
 
     @Override
+    public void deletePlaylistForUser(int userId, int playlistId) {
+        String sql = "DELETE FROM user_playlist WHERE user_id = ? AND playlist_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, userId, playlistId);
+
+        if (rowsAffected == 0) {
+            throw new IllegalArgumentException("No matching record found for userId " + userId + " and playlistId " + playlistId);
+        }
+    }
+
+    @Override
     public void linkPlaylistToEvent(int eventId, int playlistId) {
         String sql = "INSERT INTO event_playlist (playlist_id, event_id) VALUES (?, ?);";
         try {
@@ -108,7 +119,7 @@ public class JdbcPlaylistDao implements PlaylistDao{
                 "FROM playlist p " +
                 "JOIN user_playlist up ON p.playlist_id = up.playlist_id " +
                 "WHERE up.user_id = ?;";
-        System.out.println(sql);
+        //System.out.println(sql);
 
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
@@ -121,6 +132,15 @@ public class JdbcPlaylistDao implements PlaylistDao{
         }
 
         return playlists;
+    }
+
+    @Override
+    public void updatePlaylistOrder(int playlistId, List<SongOrderDto> songOrder) {
+        String sql = "UPDATE playlist_song SET position = ? WHERE playlist_id = ? AND song_id = ?";
+        System.out.println(sql);
+        for (SongOrderDto song : songOrder) {
+            jdbcTemplate.update(sql, song.getPosition(), playlistId, song.getSongId());
+        }
     }
 
     private Playlist mapRowToPlaylist(SqlRowSet results) {

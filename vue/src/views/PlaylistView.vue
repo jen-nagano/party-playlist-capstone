@@ -1,7 +1,8 @@
 <template>
   <div class="playlist-container">
     <h1>{{ playlist.name }}</h1>
-    <router-link to="/events/:eventId" class="btn-back">Back to Home</router-link>
+    <button @click="navigateBack">Back to Home</button>
+    <!-- <router-link to="/events/:eventId" class="btn-back">Back to Home</router-link> -->
 
 
   </div>
@@ -103,6 +104,11 @@ export default {
       type: String,
       required: true,
     },
+    eventId: {
+      type: Number,
+      required: true, // Set this to false if eventId is optional
+      default: 0, // Default to 0 for unattached playlists
+    }
   },
   data() {
     return {
@@ -335,7 +341,18 @@ export default {
         alert('Failed to save the order. Please try again.');
       }
     },
+    navigateBack() {
+      if (this.eventId == 0) {
+        // route to home view
+        this.$router.push({ name: 'home' });
+
+      } else {
+        // route to the correct event
+        this.$router.push({ name: 'EventView', params: { playlistId: this.playlist.playlistId, eventId: this.eventId }, });
+      }
+    }
   },
+
 
 };
 </script>

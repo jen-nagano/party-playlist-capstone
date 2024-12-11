@@ -111,7 +111,7 @@ export default {
       this.$router.push({ name: "EventView", params: { eventId } });
     },
     viewPlaylist(playlistId) {
-      this.$router.push({ name: 'PlaylistView', params: { playlistId } });
+      this.$router.push({ name: 'PlaylistView', params: { playlistId: playlistId, eventId: 0 } });
     },
     async fetchSavedPlaylists() {
       try {

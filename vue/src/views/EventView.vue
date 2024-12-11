@@ -93,7 +93,8 @@ export default {
       }
     },
     viewPlaylist(playlistId) {
-      this.$router.push({ name: 'PlaylistView', params: { playlistId: playlistId } });
+      console.log('opening playlist view for event: ' + this.$route.params.eventId);
+      this.$router.push({ name: 'PlaylistView', params: { playlistId: playlistId, eventId: this.$route.params.eventId } });
     },
     savePlaylist(playlistId) {
       EventService

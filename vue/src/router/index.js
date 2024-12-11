@@ -49,7 +49,7 @@ const routes = [
     meta: { requiresAuth: true, hideNavbar: false }, // Navbar visible
   },
   {
-    path: '/playlists/:playlistId',
+    path: '/playlists/:playlistId/event/:eventId',
     name: 'PlaylistView',
     component: PlaylistView,
     props: true,

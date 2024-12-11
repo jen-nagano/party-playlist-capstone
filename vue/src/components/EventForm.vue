@@ -1,174 +1,126 @@
 <template>
-    <form v-on:submit.prevent="submitForm" class="eventForm">
-      <div class="form-group">
-        <label for="event-name">Event Name:</label>
-        <input id="event-name" type="text" class="form-control" v-model="editEvent.name" autocomplete="off" />
-      </div>
-      <div class="form-group">
-        <label for="event-date">Date:</label>
-        <input id="event-date" type="date" v-model="editEvent.date" />
-      </div>
-      <div class="form-group">
-        <label for="start-time">Start Time:</label>
-        <input id="start-time" type="time" v-model="editEvent.startTime" />
-      </div>
-      <div class="form-group">
-        <label for="end-time">End Time:</label>
-        <input id="end-time" type="time" v-model="editEvent.endTime" />
-      </div>
-      <!-- <div class="form-group">
-        <label for="description">Description:</label>
-        <textarea id="description" class="form-control" v-model="editEvent.description"></textarea>
-      </div> -->
-      <button class="btn btn-submit">Submit</button>
+  <form v-on:submit.prevent="submitForm" class="event-form">
+    <div class="form-group">
+      <label for="event-name">Event Name:</label>
+      <input id="event-name" type="text" class="form-control" v-model="editEvent.name" autocomplete="off" />
+    </div>
+    <div class="form-group">
+      <label for="event-date">Date:</label>
+      <input id="event-date" type="date" class="form-control date-input" v-model="editEvent.date" />
+    </div>
+    <div class="form-group">
+      <label for="start-time">Start Time:</label>
+      <input id="start-time" type="time" class="form-control time-input" v-model="editEvent.startTime" />
+    </div>
+    <div class="form-group">
+      <label for="end-time">End Time:</label>
+      <input id="end-time" type="time" class="form-control time-input" v-model="editEvent.endTime" />
+    </div>
+    <div class="form-buttons">
+      <button class="btn btn-submit" type="submit">Submit</button>
       <button class="btn btn-cancel" v-on:click="cancelForm" type="button">Cancel</button>
-    </form>
-  </template>
-  
-  <script>
-  import EventService from '../services/EventService';
-  
-  export default {
-    props: {
-
+    </div>
+  </form>
+</template>
+<script>
+import EventService from '../services/EventService';
+export default {
+  data() {
+    return {
+      editEvent: {
+        name: '',
+        date: '',
+        startTime: '',
+        endTime: '',
+        creator: this.$store.state.user.id,
+      },
+    };
+  },
+  methods: {
+    submitForm() {
+      EventService.addEvent(this.editEvent)
+        .then((response) => {
+          if (response.status === 201) {
+            const eventId = response.data.id;
+            this.$router.push({ name: 'EventView', params: { eventId } });
+          }
+        })
+        .catch((error) => {
+          console.error('Error adding event:', error);
+        });
+      this.$emit('formSubmitted');
     },
-    data() {
-      return {
-        // Since props are read-only, don't bind to 'card' directly. Instead, create
-        // a new object initialized with the same property values.
-        editEvent: {
-          name: '',
-          date: {},
-          startTime: {},
-          endTime:{},
-          creator: this.$store.state.user.id
-        },
-      };
+    cancelForm() {
+      this.$emit('cancel');
     },
-    methods: {
-      submitForm() {
-        // if (!this.validateForm()) {
-        //   return;
-        // }
-          let eventId = 0;
-        //ADD EVENT is handled here
-            console.log('adding event: '+ this.editEvent);
-          // add
-          EventService
-            .addEvent(this.editEvent)
-            .then(response => {
-              if (response.status === 201) {
-                console.log(response.data);
-                eventId = response.data.id;
-                this.$router.push({ name: "EventView", params: { eventId } });
-
-                // this.$store.commit(
-                //   'SET_NOTIFICATION',
-                //   {
-                //     message: 'A new event was added.',
-                //     type: 'success'
-                //   }
-                // );
-                // this.$router.push({ name: 'BoardView', params: { id: this.editCard.boardId } });
-              }
-            })
-            .catch(error => {
-              this.handleErrorResponse(error, 'adding');
-            });
-        
-            this.$emit('formSubmitted');
-        // EDIT EVENT is handled here
-        // else {
-        //   EventService
-        //     .updateEvent(this.editCard)
-        //     .then(response => {
-        //       if (response.status === 200) {
-        //         this.$store.commit(
-        //           'SET_NOTIFICATION',
-        //           {
-        //             message: `Card ${this.editCard.id} was updated.`,
-        //             type: 'success'
-        //           }
-        //         );
-        //         this.$router.push({ name: 'BoardView', params: { id: this.editCard.boardId } });
-        //       }
-        //     })
-        //     .catch(error => {
-        //       this.handleErrorResponse(error, 'updating');
-        //     });
-        // }
-      },
-      cancelForm() {
-        this.$emit('cancel');
-      },
-      handleErrorResponse(error, verb) {
-        // if (error.response) {
-        //   this.$store.commit('SET_NOTIFICATION',
-        //     "Error " + verb + " card. Response received was '" + error.response.statusText + "'.");
-        // } else if (error.request) {
-        //   this.$store.commit('SET_NOTIFICATION', "Error " + verb + " card. Server could not be reached.");
-        // } else {
-        //   this.$store.commit('SET_NOTIFICATION', "Error " + verb + " card. Request could not be created.");
-        // }
-      },
-      validateForm() {
-        let msg = '';
-        if (this.editCard.title.length === 0) {
-          msg += 'The new card must have a title. ';
-        }
-        if (this.editCard.status.length === 0) {
-          msg += 'The new card must have a status.';
-        }
-        if (msg.length > 0) {
-          this.$store.commit('SET_NOTIFICATION', msg);
-          return false;
-        }
-        return true;
-      },
-    },
-  };
-  </script>
-  
-  
-  <style scoped>
-  .cardForm {
-    padding: 10px;
-    margin-bottom: 10px;
-  }
-  
-  .form-group {
-    margin-bottom: 10px;
-    margin-top: 10px;
-  }
-  
-  label {
-    display: inline-block;
-    margin-bottom: 0.5rem;
-  }
-  
-  .form-control {
-    display: block;
-    width: 80%;
-    height: 30px;
-    padding: 0.375rem 0.75rem;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #495057;
-    border: 1px solid #ced4da;
-    border-radius: 0.25rem;
-  }
-  
-  textarea.form-control {
-    height: 75px;
-    font-family: Arial, Helvetica, sans-serif;
-  }
-  
-  select.form-control {
-    width: 20%;
-    display: inline-block;
-    margin: 10px 20px 10px 10px;
-  }
-  
-  </style>
-  
+  },
+};
+</script>
+<style scoped>
+.event-form {
+  background: #2C2C54;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.form-group {
+  margin-bottom: 1.5rem;
+}
+label {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #FFFFFF;
+  margin-bottom: 0.5rem;
+}
+.form-control {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 2px solid #F39C12;
+  border-radius: 5px;
+  background: #1E272E;
+  color: #FFFFFF;
+  outline: none;
+  box-sizing: border-box;
+}
+.form-control:focus {
+  border-color: #F1C40F;
+  box-shadow: 0 0 5px #F1C40F;
+}
+.date-input::-webkit-calendar-picker-indicator,
+.time-input::-webkit-calendar-picker-indicator {
+  background-color: white;
+  border-radius: 50%;
+  padding: 5px;
+}
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+.btn {
+  font-size: 1rem;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-submit {
+  background: #28A745;
+  color: #FFFFFF;
+}
+.btn-submit:hover {
+  background: #218838;
+}
+.btn-cancel {
+  background: #DC3545;
+  color: #FFFFFF;
+}
+.btn-cancel:hover {
+  background: #C82333;
+}
+</style>

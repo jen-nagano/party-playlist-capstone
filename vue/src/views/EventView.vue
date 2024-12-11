@@ -1,25 +1,10 @@
 <template>
   <div class="event-container">
-    <!-- <h2>{{ event.name }}</h2>
+    <h2>{{ event.name }}</h2>
     <p>{{ event.description }}</p>
     <p><strong>Start Time:</strong> {{ event.startTime }}</p>
     <p><strong>End Time:</strong> {{ event.endTime }}</p>
-    <p><strong>Date:</strong> {{ event.date }}</p> -->
-
-    <div>
-    <!-- Display Event Details -->
-    <div v-if="!isEditing">
-      <h2>{{ event.name }}</h2>
-      <p>Date: {{ event.date }}</p>
-      <p>Start Time: {{ event.start_time }}</p>
-      <p>End Time: {{ event.end_time }}</p>
-      <button @click="editEvent">Edit Event</button>
-    </div>
-
-    <!-- Show Edit Form -->
-    <EditEvent v-if="isEditing" :event="event" @save-event="saveEvent" @cancel-edit="cancelEdit" />
-  </div>
-
+    <p><strong>Date:</strong> {{ event.date }}</p>
     <h3>Playlists</h3>
     <router-link to="/home" class="btn-back">Back to Home</router-link>
     <div class="playlist-tiles">
@@ -36,19 +21,29 @@
       </div>
       <p v-if="playlists.length === 0">No playlists found for this event.</p>
       <div>
-        <button class="btn-create-playlist" v-on:click="this.showPlaylist=true">
+        <button class="btn-create-playlist" v-on:click="this.showPlaylist = true">
           Create Playlist
         </button>
       </div>
     </div>
+    <!-- Create Playlist Form -->
     <div class="show_playlist" v-if="showPlaylist">
       <form v-on:submit.prevent="submitForm" class="playlistForm">
         <div class="form-group">
-          <label for="playlist-name">Choose a name for your playlist:</label>
-          <input id="playlist-name" type="text" class="form-control" v-model="editPlaylist.name" autocomplete="off" />
+          <label for="playlist-name" class="form-label">Choose a name for your playlist:</label>
+          <input
+            id="playlist-name"
+            type="text"
+            class="form-input"
+            v-model="editPlaylist.name"
+            placeholder="Enter playlist name"
+            autocomplete="off"
+          />
         </div>
-        <button class="btn btn-submit">Create Playlist</button>
-        <button class="btn btn-cancel" v-on:click="cancelForm" type="button">Cancel</button>
+        <div class="form-actions">
+          <button class="btn btn-submit">Create Playlist</button>
+          <button class="btn btn-cancel" v-on:click="cancelForm" type="button">Cancel</button>
+        </div>
       </form>
     </div>
     <div class="qr-code-container">
@@ -65,13 +60,7 @@
 <script>
 import axios from 'axios';
 import EventService from '../services/EventService';
-import EditEvent from '../components/EditEvent.vue';
-
-
 export default {
-  components: {
-    EditEvent
-  },
   data() {
     return {
       event: {},
@@ -82,8 +71,7 @@ export default {
       editPlaylist: {
         name: '',
         userId: this.$store.state.user.id
-      }, 
-      isEditing: false,
+      }
     };
   },
   created() {
@@ -116,7 +104,6 @@ export default {
       }
     },
     viewPlaylist(playlistId) {
-      console.log('opening playlist view for event: ' + this.$route.params.eventId);
       this.$router.push({ name: 'PlaylistView', params: { playlistId: playlistId, eventId: this.$route.params.eventId } });
     },
     savePlaylist(playlistId) {
@@ -124,19 +111,11 @@ export default {
         .savePlaylist(this.$store.state.user.id, playlistId)
         .then(response => {
           if (response.status === 201) {
-            // this.$store.commit(
-            //   'SET_NOTIFICATION',
-            //   {
-            //     message: 'A new event was added.',
-            //     type: 'success'
-            //   }
-            // );
-            //console.log(response.data);
-            //this.$router.push({ name: 'PlaylistView', params: { playlistId: response.data.playlistId } });
+            console.log(response.data);
           }
         })
         .catch(error => {
-          console.log(error, 'adding');
+          console.error('Error saving playlist:', error);
         });
     },
     submitForm() {
@@ -152,7 +131,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error, 'adding');
+          console.error('Error adding playlist:', error);
         });
       this.showPlaylist = false;
     },
@@ -176,14 +155,10 @@ export default {
       var result = confirm("Are you sure you want to remove this playlist from the event?");
       if (result) {
         try {
-          // Make the DELETE request to the backend
           this.playlists = this.playlists.filter(playlist => playlist.id !== playlistId);
-
           const eventId = this.$route.params.eventId;
           const response = await axios.delete(`/playlists/${playlistId}/events/${eventId}`);
-
           if (response.status === 204) {
-            //alert('Successfully removed the event from the playlist.');
             await this.fetchPlaylists();
             window.location.reload();
           } else {
@@ -194,38 +169,7 @@ export default {
           alert('An error occurred while trying to remove the event from the playlist. Please try again.');
         }
       }
-    },
-    // Show the edit form
-    editEvent() {
-      this.isEditing = true;
-    },
-    // Save the edited event
-    async saveEvent(updatedEvent) {
-      updatedEvent.creator = this.$store.state.user.id;
-      //updatedEvent.date = updatedEvent.date.toISOString().split('T')[0];
-      console.log(updatedEvent);
-      try {
-        const eventId = this.$route.params.eventId;  // Get the event ID from the route
-        const response = await axios.put(`/events/${eventId}`, updatedEvent);
-
-        if (response.status === 204) {
-          // Successfully updated the event in the database
-          this.$emit('save-event', updatedEvent);  // Pass the updated event back to the parent component
-          alert('Event updated successfully!');
-          this.$router.push({ name: 'EventView', params: { eventId: eventId } });  // Redirect to the event view page
-        } else {
-          alert('Failed to update event.');
-        }
-      } catch (error) {
-        console.error('Error updating event:', error);
-        alert('An error occurred while updating the event. Please try again.');
-      }
-    },
-    // Reset the form if cancel is clicked
-    cancelEdit(originalEvent) {
-      this.event = { ...originalEvent }; // Revert to original event data
-      this.isEditing = false;  // Exit edit mode
-    },
+    }
   }
 };
 </script>
@@ -234,6 +178,64 @@ export default {
   text-align: center;
   font-size: 2rem;
 }
+/* Improved Playlist Form Styling */
+.playlistForm {
+  margin: 20px auto;
+  padding: 20px;
+  background: #1E1E2F;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+.form-group {
+  margin-bottom: 15px;
+}
+.form-label {
+  display: block;
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+}
+.form-input:focus {
+  outline: none;
+  border-color: #3498DB;
+  box-shadow: 0px 0px 8px rgba(52, 152, 219, 0.8);
+}
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+}
+.btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-submit {
+  background-color: #3498DB;
+  color: #fff;
+}
+.btn-submit:hover {
+  background-color: #2980B9;
+}
+.btn-cancel {
+  background-color: #E74C3C;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background-color: #C0392B;
+}
+/* Other Existing Styling */
 .playlist-tiles {
   display: flex;
   flex-wrap: wrap;

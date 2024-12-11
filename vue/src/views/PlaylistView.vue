@@ -34,7 +34,7 @@
         </div>
 
       </div>
-      <button @click="saveOrder">Save Order</button>
+      <!-- <button @click="saveOrder">Save Order</button> -->
     </div>
   <div class="playlist-container">
     <h1 class="text-center text-4xl font-bold py-4">Search for songs to add to your playlist.</h1>
@@ -317,6 +317,7 @@ export default {
     updateOrder(evt) {
       const movedItem = this.playlistSongs.splice(evt.oldIndex, 1)[0];
       this.playlistSongs.splice(evt.newIndex, 0, movedItem);
+      this.saveOrder();
     },
     async saveOrder() {
       try {
@@ -328,7 +329,7 @@ export default {
         console.log("Request Body:", requestBody);  // Log the data being sent
 
         await axios.put(`/playlists/${this.playlist.playlistId}/songs/order`, requestBody);
-        alert('Order saved successfully!');
+        //alert('Order saved successfully!');
       } catch (error) {
         console.error('Error saving order:', error);
         alert('Failed to save the order. Please try again.');

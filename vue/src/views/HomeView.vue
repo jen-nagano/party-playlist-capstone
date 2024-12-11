@@ -1,147 +1,154 @@
 <template>
   <div class="home">
-    <!-- Banner Section -->
     <div class="banner">
       <h1 class="banner-title"></h1>
     </div>
-
-
-    <!-- Main Content -->
     <div class="content">
-      <!-- Welcome Message -->
       <p class="welcome-message">Welcome to the Panda Party!</p>
-     
-      <!-- Create Event Header -->
-      <!-- <h2 class="create-event-header">Your Events</h2> -->
-
-      <!-- Tile Section -->
       <h2 class="event-list-header">The events you are hosting:</h2>
       <div v-if="events.length === 0">You are not hosting any events.</div>
-      <div class="event-tiles">
-        <div v-for="event in events" :key="event.id" class="event-tile">
-          <h3 class="event-title">{{ event.name }}</h3>
-          <p class="event-description">{{ event.description }}</p>
-          <button class="btn-view-details" @click="viewEvent(event.id)">View Details</button>
-          <button class="btn-view-details" @click="deleteEvent(event.id)">Remove Event</button>
+      <!-- Add Event Button and Form -->
+      <div v-if="!showEvent">
+        <button class="btn-create-event" v-on:click="showEvent = true">
+          <span class="plus-sign">+</span> Add Event
+        </button>
+      </div>
+      <!-- Event Form Section -->
+      <div v-if="showEvent" class="event-form-section">
+        <EventForm @formSubmitted="hideEvent" @cancel="hideEvent"/>
+      </div>
+      <!-- Event Tiles -->
+      <div class="event-tiles-container">
+        <div class="event-tiles">
+          <div v-for="event in events" :key="event.id" class="event-tile">
+            <h3 class="event-title">{{ event.name }}</h3>
+            <p class="event-description">{{ event.description }}</p>
+            <div class="event-buttons">
+              <button class="btn-view-details" @click="viewEvent(event.id)">View Details</button>
+              <button class="btn-view-details" @click="deleteEvent(event.id)">Remove Event</button>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- Create Event Button (Styled as a Panel with Plus Sign) -->
-      <button class="btn-create-event" v-on:click="showEvent = true" v-if="!showEvent">
-        <span class="plus-sign">+</span>
-      </button>
-
-      <div class="Event" v-if="showEvent">
-        <h1>Event</h1>
-        <p>Complete the form to add a new event.</p>
-        <EventForm @formSubmitted="hideEvent"/>
-        <!-- <router-link class="btn btn-submit" :to="{ name: 'playlist' }">Create Playlist</router-link> -->
-      </div>
-
       <h2 class="event-list-header">The events you are invited to:</h2>
       <div v-if="guestEvents.length === 0">You are not attending any events.</div>
       <div class="event-tiles">
         <div v-for="event in guestEvents" :key="event.id" class="event-tile">
           <h3 class="event-title">{{ event.name }}</h3>
           <p class="event-description">{{ event.description }}</p>
-          <button class="btn-view-details" @click="viewEvent(event.id)">View Details</button>
+          <div class="event-buttons">
+            <button class="btn-view-details" @click="viewEvent(event.id)">View Details</button>
+          </div>
         </div>
       </div>
-
       <h2 class="event-list-header">Saved Playlists:</h2>
       <div v-if="savedPlaylists.length === 0">You do not have any saved playlists.</div>
       <div class="event-tiles">
         <div v-for="playlist in savedPlaylists" :key="playlist.id" class="event-tile">
           <h3 class="event-title">{{ playlist.name }}</h3>
-          <button class="btn-view-details" @click="viewPlaylist(playlist.playlistId)">View Details</button>
-          <button class="btn-view-details" @click="removePlaylist(playlist.playlistId)">Remove Playlist</button>
+          <div class="event-buttons">
+            <button class="btn-view-details" @click="viewPlaylist(playlist.playlistId)">View Details</button>
+            <button class="btn-view-details" @click="removePlaylist(playlist.playlistId)">Remove Playlist</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-
-
 <script>
 import EventForm from '../components/EventForm.vue';
-import axios from 'axios'; // Install axios with npm if you haven't: npm install axios
-
+import axios from 'axios';
 export default {
   components: {
     EventForm
   },
   data() {
     return {
-      showEvent: false, // Controls event form visibility
-      events: [], // Stores the events fetched from the database
+      showEvent: false,
+      events: [],
       guestEvents: [],
       savedPlaylists: []
     };
   },
   created() {
-    // Fetch events when the component loads
     this.fetchEvents();
     this.fetchSavedPlaylists();
   },
   methods: {
     hideEvent() {
       this.showEvent = false;
-      this.fetchEvents(); // Refresh events after a new one is added
+      this.fetchEvents();
     },
     async fetchEvents() {
       try {
-        const userId = this.$store.state.user?.id; // Ensure user.id exists
+        const userId = this.$store.state.user?.id;
         if (!userId) {
           console.error('User ID is not defined');
           return;
         }
-
         const response = await axios.get(`/users/${userId}/events?role=host`);
         this.events = response.data;
       } catch (error) {
         console.error('Error fetching events:', error);
-        this.events = []; // Optionally clear the events list on failure
+        this.events = [];
       }
     },
     async fetchGuestEvents() {
       try {
-        const userId = this.$store.state.user?.id; // Ensure user.id exists
+        const userId = this.$store.state.user?.id;
         if (!userId) {
           console.error('User ID is not defined');
           return;
         }
-
         const response = await axios.get(`/users/${userId}/events?role=guest`);
         this.guestEvents = response.data;
       } catch (error) {
         console.error('Error fetching events:', error);
-        this.guestEvents = []; // Optionally clear the events list on failure
+        this.guestEvents = [];
       }
     },
     viewEvent(eventId) {
-      console.log('View event details for ID:', eventId);
       this.$router.push({ name: "EventView", params: { eventId } });
-      // Add navigation or modal logic here if needed
     },
-    viewPlaylist(playlistId) { 
-      console.log("playlistId: " + playlistId);
-      this.$router.push({ name: 'PlaylistView', params: { playlistId: playlistId } });
+    viewPlaylist(playlistId) {
+      this.$router.push({ name: 'PlaylistView', params: { playlistId } });
     },
     async fetchSavedPlaylists() {
       try {
-        const userId = this.$store.state.user?.id; // Make sure the user ID is available
+        const userId = this.$store.state.user?.id;
         if (!userId) {
           console.warn("User ID is not defined.");
           return;
         }
-
         const response = await axios.get(`/users/${userId}/playlists`);
-        this.savedPlaylists = response.data; // Update the component's data property
+        this.savedPlaylists = response.data;
       } catch (error) {
         if (error.response && error.response.status === 404) {
           console.warn("No saved playlists found for this user.");
         } else {
           console.error("Error fetching saved playlists:", error);
+        }
+      }
+    },
+    async deleteEvent(eventId) {
+      var result = confirm("Are you sure you want to delete this event?");
+      if (result) {
+        const userId = this.$store.state.user?.id; // Make sure the user ID is available
+        if (!userId) {
+          console.warn("User ID is not defined.");
+          return;
+        }
+        try {
+          const response = await axios.delete(`/users/${userId}/events/${eventId}`);
+          if (response.status === 204) {
+            console.log('Event successfully deleted for the user.');
+          } else {
+            console.warn('Unexpected response status:', response.status);
+          }
+          this.fetchEvents();
+        } catch (error) {
+          console.error('Error deleting event for user:', error.response?.data || error.message);
+          throw error; // Rethrow to handle higher-level errors if needed
         }
       }
     },
@@ -169,253 +176,140 @@ export default {
       }
 
     },
-    async deleteEvent(eventId) {
-      var result = confirm("Are you sure you want to delete this event?");
-      if (result) {
-        const userId = this.$store.state.user?.id; // Make sure the user ID is available
-        if (!userId) {
-          console.warn("User ID is not defined.");
-          return;
-        }
-        try {
-          const response = await axios.delete(`/users/${userId}/events/${eventId}`);
-          if (response.status === 204) {
-            console.log('Event successfully deleted for the user.');
-          } else {
-            console.warn('Unexpected response status:', response.status);
-          }
-          this.fetchEvents();
-        } catch (error) {
-          console.error('Error deleting event for user:', error.response?.data || error.message);
-          throw error; // Rethrow to handle higher-level errors if needed
-        }
-      }
-    }
   }
-
-  
 };
 </script>
-
-
 <style scoped>
-/* Importing a fun font from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-
-
-/* Body Layout */
 .home {
   font-family: 'Poppins', sans-serif;
-  margin-top: 60px;  /* Adjusted to avoid overlap with navbar */
+  margin-top: 60px;
 }
-
-
-/* Banner Section */
 .banner {
   width: 100%;
-  height: 350px;   /* Increase the height of the banner to give more space */
-  background-image: url('/src/img/home.png'); /* Your banner image path */
+  height: 350px;
+  background-image: url('/src/img/home.png');
   background-size: cover;
-  background-position: top center;  /* This keeps the top part of the image visible */
+  background-position: top center;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   color: white;
-  padding-top: 60px; /* Adjust to avoid overlap with navbar, can be fine-tuned */
+  padding-top: 60px;
 }
-
-
 .banner-title {
   font-size: 3rem;
   font-weight: bold;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Optional text shadow */
-  color: #8e44ad; /* Purple color */
-  animation: pulseGlow 1.5s ease-in-out infinite;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  color: #8E44AD;
 }
-
-
-/* Main Content Styling */
 .content {
   text-align: center;
   padding: 20px;
 }
-
-
-/* Welcome Message Styling */
 .welcome-message {
-  font-size: 3rem; /* Larger font size */
-  font-weight: bold; /* Bold text */
-  color: #8e44ad; /* Purple color */
+  font-size: 3rem;
+  font-weight: bold;
+  color: #8E44AD;
   margin-top: 20px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  animation: pulseGlow 1.5s ease-in-out infinite;
+  text-shadow: 0 0 10px white;
 }
-
-
-/* Header for Create Event */
-.create-event-header {
-  font-size: 2.5rem;
-  color: #8e44ad; /* Purple color */
+.event-list-header {
+  font-size: 2rem;
+  color: #8E44AD;
   margin-top: 30px;
   font-weight: bold;
 }
-
-
-/* Button Styling for "Create Event" (Styled as a Panel with Plus Sign) */
+.event-tiles-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+.event-form-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
 .btn-create-event {
   display: inline-block;
-  background-color: #9b59b6;  /* Purple background color */
+  background: linear-gradient(45deg, #9B59B6, #120916);
   color: white;
-  padding: 60px 80px;  /* Increased padding to make the button 2x bigger */
+  padding: 20px 40px;
   border-radius: 10px;
   text-decoration: none;
-  font-size: 3rem;  /* Increased font size for larger button */
+  font-size: 1.8rem;
   text-align: center;
-  margin-top: 30px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  position: relative;
-  animation: glowEffect 1.5s ease-in-out infinite;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 15px rgba(255, 255, 255, 0.959);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
-
 .btn-create-event:hover {
-  background-color: #8e44ad;  /* Darker purple on hover */
   transform: scale(1.1);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
 }
-
-
 .plus-sign {
-  font-size: 5rem;  /* Increased plus sign size for bigger button */
+  font-size: 3rem;
   margin-right: 10px;
   font-weight: bold;
-  animation: bouncePlus 1s infinite;
 }
-
-
-/* Mobile Adjustments */
-@media (max-width: 768px) {
-  .banner {
-    height: 250px; /* Adjust the height for mobile to ensure the top of the image is visible */
-  }
-
-
-  .banner-title {
-    font-size: 2rem; /* Smaller title for mobile */
-  }
-
-
-  .welcome-message {
-    font-size: 2rem; /* Smaller welcome text on mobile */
-  }
-
-
-  .create-event-header {
-    font-size: 2rem; /* Smaller header on mobile */
-  }
-
-
-  .btn-create-event {
-    font-size: 2rem; /* Smaller button text for mobile */
-    padding: 40px 60px; /* Adjusted padding */
-  }
-
-
-  .plus-sign {
-    font-size: 4rem; /* Smaller plus sign for mobile */
-  }
-}
-
-
-/* Glowing Animation for Text */
-@keyframes pulseGlow {
-  0% {
-    text-shadow: 0 0 10px #9b59b6, 0 0 20px #9b59b6, 0 0 30px #9b59b6;
-  }
-  50% {
-    text-shadow: 0 0 20px #9b59b6, 0 0 30px #9b59b6, 0 0 40px #9b59b6;
-  }
-  100% {
-    text-shadow: 0 0 10px #9b59b6, 0 0 20px #9b59b6, 0 0 30px #9b59b6;
-  }
-}
-
-
-/* Glowing Effect for Button */
-@keyframes glowEffect {
-  0% {
-    box-shadow: 0 0 10px #9b59b6, 0 0 20px #9b59b6, 0 0 30px #9b59b6;
-  }
-  50% {
-    box-shadow: 0 0 20px #9b59b6, 0 0 40px #9b59b6, 0 0 50px #9b59b6;
-  }
-  100% {
-    box-shadow: 0 0 10px #9b59b6, 0 0 20px #9b59b6, 0 0 30px #9b59b6;
-  }
-}
-
-
-/* Bouncing animation for the plus sign */
-@keyframes bouncePlus {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-/* added styles here -Jen */
 .event-tiles {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  margin-top: 30px;
   justify-content: center;
 }
-
 .event-tile {
-  background-color: #9b59b6; /* Purple background color */
+  background: linear-gradient(45deg, #9B59B6, #0A050C);
   color: white;
-  padding: 20px;
-  border-radius: 10px;
+  padding: 30px;
+  border-radius: 15px;
   text-align: center;
-  width: 200px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  width: 320px;
+  height: 320px;
+  box-shadow: 0 6px 12px rgb(255, 255, 255);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
-.event-tile:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
 .event-title {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
   margin-bottom: 10px;
+  text-shadow: 0 0 10px white;
 }
-
 .event-description {
-  font-size: 1rem;
+  font-size: 1.2rem;
   margin-bottom: 15px;
+  text-shadow: 0 0 10px white;
 }
-
-.btn-view-details {
-  background-color: white;
-  color: #9b59b6;
-  border: 2px solid #9b59b6;
-  padding: 5px 10px;
-  border-radius: 5px;
+.event-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.btn-view-details,
+.btn-remove-event {
+  background-color: rgb(14, 13, 13);
+  color: #9B59B6;
+  border: 2px solid #9B59B6;
+  padding: 18px 28px; /* 45% bigger */
+  border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
-
 .btn-view-details:hover {
-  background-color: #8e44ad;
+  background-color: #8E44AD;
+  color: white;
+}
+.btn-remove-event {
+  background-color: #E74C3C;
+  color: white;
+  border: 2px solid #E74C3C;
+}
+.btn-remove-event:hover {
+  background-color: #C0392B;
   color: white;
 }
 </style>
-

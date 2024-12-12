@@ -321,58 +321,75 @@ export default {
 .playlistForm {
   margin: 20px auto;
   padding: 20px;
-  background: #1E1E2F;
+  background: #333; /* Dark grey background */
   border-radius: 10px;
   width: 400px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
   text-align: center;
 }
+
 .form-group {
   margin-bottom: 15px;
 }
+
 .form-label {
   display: block;
   font-size: 1.2rem;
-  color: #fff;
+  color: #fff; /* White text */
   margin-bottom: 10px;
 }
+
 .form-input {
   width: 100%;
   padding: 10px;
   border-radius: 5px;
-  border: 1px solid #ddd;
+  border: 1px solid #aaa; /* Light grey border */
   font-size: 1rem;
+  background: #222; /* Dark background */
+  color: #fff; /* White text */
+  box-sizing: border-box; /* Include padding and border in the width */
 }
+
 .form-input:focus {
   outline: none;
-  border-color: #3498DB;
-  box-shadow: 0px 0px 8px rgba(52, 152, 219, 0.8);
+  border-color: rgb(255, 105, 180, 0.9); /* Purple border on focus */
+  box-shadow: 0px 0px 8px rgb(255, 105, 180, 0.6); /* Purple shadow on focus */
 }
+
 .form-actions {
   display: flex;
   justify-content: space-between;
 }
+
 .btn {
-  padding: 10px 20px;
   font-size: 1rem;
+  padding: 0.7rem 1.5rem;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
+
+.btn:hover {
+  background: rgb(255, 105, 180, 0.6); /* Darker purple on hover */
+}
+
 .btn-submit {
-  background-color: #3498DB;
-  color: #fff;
+  background: rgb(255, 105, 180, 0.9); /* Purple background */
+  color: #fff; /* White text */
 }
+
 .btn-submit:hover {
-  background-color: #2980B9;
+  background: rgb(255, 105, 180, 0.6); /* Darker purple for submit on hover */
 }
+
 .btn-cancel {
-  background-color: #E74C3C;
-  color: #fff;
+  background: rgb(255, 105, 180, 0.9); /* Lighter purple for cancel */
+  color: #fff; /* White text */
 }
+
 .btn-cancel:hover {
-  background-color: #C0392B;
+  background: rgb(255, 105, 180, 0.6); /* Darker purple for cancel on hover */
 }
 /* Other Existing Styling */
 .playlist-tiles {
@@ -491,13 +508,15 @@ export default {
   margin-bottom: 20px;
 }
 .btn-download-qr {
-  background-color: #2ECC71;
+  background: linear-gradient(45deg, rgb(255, 105, 180, 0.9), #0A050C);
+  box-shadow: 0 6px 12px rgb(255, 255, 255);
   color: white;
-  padding: 12px 24px;
+  padding: 15px 30px;
   border-radius: 10px;
   cursor: pointer;
   font-size: 2rem;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  margin-top: 20px;
 }
 .btn-download-qr:hover {
   background-color: #27AE60;

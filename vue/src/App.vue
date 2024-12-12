@@ -1,74 +1,95 @@
 <template>
-  <div id="capstone-app">
+  <div id="capstone-app" :class="backgroundClass">
     <!-- Conditionally render the navbar -->
     <div id="nav" v-if="showNavbar">
       <div class="nav-container">
-        <!-- Logo Section -->
         <div class="logo-container">
           <router-link v-bind:to="{ name: 'home' }">
             <img src="/src/img/nav.png" alt="Logo" class="logo-img" />
           </router-link>
-          <!-- User Greeting (Welcome text) on the left, next to logo -->
           <li v-if="isAuthenticated">
             <span class="user-indicator">Welcome, {{ username }}</span>
           </li>
         </div>
-        <!-- Title Section (Centered between the left side and right side) -->
         <h1 class="nav-title">Panda Party Playlist</h1>
-        <!-- Navigation Links (Right side with Logout Link) -->
         <div class="nav-links">
-          <!-- Logout Link -->
           <router-link v-if="isAuthenticated" v-bind:to="{ name: 'logout' }" class="nav-link">Logout</router-link>
         </div>
       </div>
     </div>
-    <!-- Main Content -->
+    <!-- Conditionally render video background -->
+    <video v-if="isVideoBackground" class="custom-video-background" autoplay loop muted>
+      <source src="/path/to/your/video.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
     <router-view />
   </div>
 </template>
 <script>
 export default {
   computed: {
-    // Logic to determine whether to show the navbar
+    // Check if the navbar should be visible
     showNavbar() {
       return !this.$route.meta.hideNavbar;
     },
     // Check if the user is authenticated
     isAuthenticated() {
-      return this.$store.state.token !== ''; // Check if token exists
+      return this.$store.state.token !== '';  // Check if the token exists
     },
-    // Get the username from the store or fallback to 'Guest'
+    // Get the username from the store
     username() {
       return this.$store.state.user?.username || 'Guest';
+    },
+    // Dynamically change the background class based on route metadata
+    backgroundClass() {
+      return this.$route.meta.isCustomBackground ? 'custom-background' : 'default-background';
+    },
+    // Check if the background should be a video (based on route metadata)
+    isVideoBackground() {
+      return this.$route.meta.isCustomBackground && this.$route.meta.isVideoBackground;
     }
   }
 };
 </script>
 <style scoped>
-/* Global Dark Theme */
 #capstone-app {
   font-family: 'Arial', sans-serif;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(to right, #0B0B0B, #181616); /* Vibrant pink gradient */
   color: #ECF0F1;
 }
+/* Default background styling */
+.default-background {
+  background: linear-gradient(to right, #0B0B0B, #181616); /* Default background */
+}
+/* Custom background styling */
+.custom-background {
+  background: url('/path/to/your/image-or-graphic.jpg') no-repeat center center fixed;
+  background-size: cover;
+  position: relative;
+}
+/* Styling for video background */
+.custom-video-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1; /* Ensure the video stays behind the content */
+}
+/* Navbar styling */
 #nav {
   background-color: #741577;
   padding: 20px 30px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-  border-radius: 15px; /* Rounded corners for a more stylish look */
-  transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+  border-radius: 15px;
   position: sticky;
   top: 0;
   z-index: 1000;
-  /* Neon border effect */
   border: 2px solid transparent;
-  box-shadow: 0 0 15px 5px rgba(255, 105, 180, 0.9), 0 0 20px 10px rgba(255, 105, 180, 0.7); /* Glowing neon effect */
-}
-li {
-  list-style-type: none; /* Removes the default bullet */
+  box-shadow: 0 0 15px 5px rgba(255, 105, 180, 0.9), 0 0 20px 10px rgba(255, 105, 180, 0.7);
 }
 .nav-container {
   display: flex;
@@ -79,12 +100,12 @@ li {
 .logo-container {
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* Ensure the user greeting is next to the logo */
+  justify-content: flex-start;
 }
 .logo-img {
-  width: 101px; /* Increased size by 45% */
+  width: 101px;
   height: auto;
-  margin-right: 15px; /* Space between image and text */
+  margin-right: 15px;
   transition: transform 0.3s ease;
 }
 .nav-title {
@@ -92,10 +113,10 @@ li {
   font-weight: bold;
   color: #fff;
   text-align: center;
-  flex-grow: 1; /* Ensures title takes up remaining space */
+  flex-grow: 1;
   position: absolute;
   left: 50%;
-  transform: translateX(-50%); /* Center the title */
+  transform: translateX(-50%);
 }
 .nav-links {
   display: flex;
@@ -124,9 +145,9 @@ li {
   transition: transform 0.25s ease-in-out;
 }
 .nav-link:hover {
-  color: #DB34A9; /* Vibrant neon blue */
+  color: #DB34A9;
   transform: scale(1.1) rotate(3deg);
-  text-shadow: 0 0 15px #3498DB, 0 0 30px #3498DB; /* Glowing neon blue */
+  text-shadow: 0 0 15px #3498DB, 0 0 30px #3498DB;
 }
 .nav-link:hover:before {
   transform: scaleX(1);
@@ -134,14 +155,14 @@ li {
 }
 #nav:hover {
   background-color: #0D0D0E;
-  transform: translateY(-5px); /* 3D floating effect */
+  transform: translateY(-5px);
 }
-/* Add styles for user-indicator */
 .user-indicator {
   color: #fff;
   font-size: 1.1rem;
   margin-left: 20px;
 }
+/* Button and other styles */
 button {
   background-color: #8E44AD;
   color: white;
@@ -186,16 +207,3 @@ router-view {
   }
 }
 </style>
-
-
-
-
-
-
-
-
-
-
-
-
-

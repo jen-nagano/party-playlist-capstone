@@ -1,18 +1,8 @@
 <template>
   <div class="home">
-    <!-- <div class="banner">
-      <h1 class="banner-title"></h1>
-    </div> -->
     <div class="content">
-      <!-- <p class="welcome-message">Welcome to the Panda Party!</p> -->
       <h2 class="event-list-header">Events:</h2>
       <div v-if="events.length === 0">You are not hosting any events.</div>
-      <!-- Add Event Button and Form -->
-      <div v-if="!showEvent">
-        <button class="btn-create-event" v-on:click="showEvent = true">
-          <span class="plus-sign">+</span> Add Event
-        </button>
-      </div>
       <!-- Event Form Section -->
       <div v-if="showEvent" class="event-form-section">
         <EventForm @formSubmitted="hideEvent" @cancel="hideEvent"/>
@@ -20,6 +10,12 @@
       <!-- Event Tiles -->
       <div class="event-tiles-container">
         <div class="event-tiles">
+          <!-- Add Event Button and Form -->
+          <div>
+            <button class="btn-create-event" v-on:click="showEvent = true">
+              <span class="plus-sign">+</span> Add Event
+            </button>
+          </div>
           <div v-for="event in events" :key="event.id" class="event-tile">
             <h3 class="event-title">{{ event.name }}</h3>
             <p class="event-description">{{ event.description }}</p>
@@ -28,27 +24,14 @@
               <button class="btn-view-details" @click="deleteEvent(event.id)">Remove Event</button>
             </div>
           </div>
+
         </div>
       </div>
-      <!-- <h2 class="event-list-header">The events you are invited to:</h2>
-      <div v-if="guestEvents.length === 0">You are not attending any events.</div>
-      <div class="event-tiles">
-        <div v-for="event in guestEvents" :key="event.id" class="event-tile">
-          <h3 class="event-title">{{ event.name }}</h3>
-          <p class="event-description">{{ event.description }}</p>
-          <div class="event-buttons">
-            <button class="btn-view-details" @click="viewEvent(event.id)">View Details</button>
-          </div>
-        </div>
-      </div> -->
+        
+
       <h2 class="event-list-header">Playlists:</h2>
       <div v-if="savedPlaylists.length === 0">You do not have any saved playlists.</div>
-      <div>
-        <button class="btn-create-event" v-on:click="this.showPlaylist = true">
-          <span class="plus-sign">+</span> Add Playlist
-        </button>
-      </div>
-                <!-- Create Playlist Form -->
+    <!-- Create Playlist Form -->
     <div class="show_playlist" v-if="showPlaylist">
       <form v-on:submit.prevent="submitForm" class="playlistForm">
         <div class="form-group">
@@ -68,7 +51,15 @@
         </div>
       </form>
     </div>
+    <!-- Create Playlist Form -->
+    <div class="show_playlist" v-if="showPlaylist">
+    </div>
       <div class="event-tiles">
+        <div>
+          <button class="btn-create-event" v-on:click="this.showPlaylist = true">
+            <span class="plus-sign">+</span> Add Playlist
+          </button>
+        </div>
         <div v-for="playlist in savedPlaylists" :key="playlist.id" class="event-tile">
           <h3 class="event-title">{{ playlist.name }}</h3>
           <div class="event-buttons">
@@ -78,26 +69,7 @@
         </div>
       </div>
 
-          <!-- Create Playlist Form -->
-    <div class="show_playlist" v-if="showPlaylist">
-      <form v-on:submit.prevent="submitForm" class="playlistForm">
-        <div class="form-group">
-          <label for="playlist-name" class="form-label">Choose a name for your playlist:</label>
-          <input
-            id="playlist-name"
-            type="text"
-            class="form-input"
-            v-model="editPlaylist.name"
-            placeholder="Enter playlist name"
-            autocomplete="off"
-          />
-        </div>
-        <div class="form-actions">
-          <button class="btn btn-submit">Create Playlist</button>
-          <button class="btn btn-cancel" v-on:click="cancelForm" type="button">Cancel</button>
-        </div>
-      </form>
-    </div>
+
     </div>
   </div>
 </template>
@@ -269,7 +241,7 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 .home {
   font-family: 'Poppins', sans-serif;
-  margin-top: 60px;
+  /*margin-top: 60px;*/
 }
 .banner {
   width: 100%;
@@ -292,7 +264,7 @@ export default {
 }
 .content {
   text-align: center;
-  padding: 20px;
+  padding: 10px;
 }
 .welcome-message {
   font-size: 3rem;
@@ -304,16 +276,16 @@ export default {
   text-shadow: 0 0 10px white;
 }
 .event-list-header {
-  font-size: 2rem;
-  color: #8E44AD;
-  margin-top: 30px;
+  font-size: 2.5rem;
+  color: white;
+  margin-top: 20px;
   font-weight: bold;
 }
 .event-tiles-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 .event-form-section {
   display: flex;
@@ -322,6 +294,7 @@ export default {
 }
 .btn-create-event {
   display: inline-block;
+  /*background-color: #9B59B6 ;*/
   background: linear-gradient(45deg, #9B59B6, #120916);
   color: white;
   padding: 20px 40px;
@@ -334,7 +307,7 @@ export default {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .btn-create-event:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
 }
 .plus-sign {
@@ -355,7 +328,7 @@ export default {
   border-radius: 15px;
   text-align: center;
   width: 320px;
-  height: 320px;
+  height: 260px;
   box-shadow: 0 6px 12px rgb(255, 255, 255);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -397,5 +370,41 @@ export default {
 .btn-remove-event:hover {
   background-color: #C0392B;
   color: white;
+}
+/* copied form stuff from event form */
+/* Improved Playlist Form Styling */
+.playlistForm {
+  margin: 20px auto;
+  padding: 20px;
+  background: #1E1E2F;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+.form-group {
+  margin-bottom: 15px;
+}
+.form-label {
+  display: block;
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+}
+.form-input:focus {
+  outline: none;
+  border-color: #3498DB;
+  box-shadow: 0px 0px 8px rgba(52, 152, 219, 0.8);
+}
+.form-actions {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

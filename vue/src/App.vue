@@ -81,7 +81,10 @@ export default {
 }
 /* Navbar styling */
 #nav {
-  background-color: #741577;
+  /*background-color: #741577;*/
+  /*background-color: #C809BE;*/
+  /*background-color: #9E0686;*/
+  background-color: black;
   padding: 20px 30px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   border-radius: 15px;
@@ -90,6 +93,7 @@ export default {
   z-index: 1000;
   border: 2px solid transparent;
   box-shadow: 0 0 15px 5px rgba(255, 105, 180, 0.9), 0 0 20px 10px rgba(255, 105, 180, 0.7);
+  
 }
 .nav-container {
   display: flex;
@@ -155,7 +159,7 @@ export default {
 }
 #nav:hover {
   background-color: #0D0D0E;
-  transform: translateY(-5px);
+  /*transform: translateY(-5px);*/
 }
 .user-indicator {
   color: #fff;

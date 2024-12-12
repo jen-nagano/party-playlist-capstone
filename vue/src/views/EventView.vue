@@ -3,7 +3,8 @@
 
     <div>
       <!-- Display Event Details -->
-      <div v-if="!isEditing">
+      <div v-if="!isEditing" class="event-heading">
+        <router-link to="/home" class="btn-back">Back to Home</router-link>
         <h2>{{ event.name }}</h2>
         <p>{{ event.description }}</p>
         <p><strong>Start Time:</strong> {{ event.startTime }}</p>
@@ -16,7 +17,6 @@
     </div>
 
     <h3>Playlists</h3>
-    <router-link to="/home" class="btn-back">Back to Home</router-link>
     <div class="playlist-tiles">
       <div
         v-for="playlist in playlists"
@@ -30,56 +30,58 @@
         <button @click="removePlaylist(playlist.playlistId)" class="btn-view-playlist">Remove Playlist</button>
       </div>
       <p v-if="playlists.length === 0">No playlists found for this event.</p>
-      <div>
-        <button class="btn-create-playlist" v-on:click="this.showPlaylist = true">
-          Create Playlist
-        </button>
 
+    </div>
+    <div class="button-holder">
+      <button class="btn-create-playlist" v-on:click="this.showPlaylist = true">Create New Playlist</button>
+      <button class="btn-create-playlist" v-on:click="displaySavedPlaylists()" type="button">Find Saved Playlist</button>
+      <button @click="toggleQRCode" class="btn-create-playlist">Show QR Code</button>
+    </div>
+    <div class="options">
+      <!-- Create Playlist Form -->
+      <div class="show_playlist" v-if="showPlaylist">
+        <form v-on:submit.prevent="submitForm" class="playlistForm">
+          <div class="form-group">
+            <label for="playlist-name" class="form-label">Choose a name for your playlist:</label>
+            <input
+              id="playlist-name"
+              type="text"
+              class="form-input"
+              v-model="editPlaylist.name"
+              placeholder="Enter playlist name"
+              autocomplete="off"
+            />
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-submit">Create Playlist</button>
+            <button class="btn btn-cancel" v-on:click="cancelForm" type="button">Cancel</button>
+          </div>
+        </form>
       </div>
-    </div>
-    <!-- Create Playlist Form -->
-    <div class="show_playlist" v-if="showPlaylist">
-      <form v-on:submit.prevent="submitForm" class="playlistForm">
-        <div class="form-group">
-          <label for="playlist-name" class="form-label">Choose a name for your playlist:</label>
-          <input
-            id="playlist-name"
-            type="text"
-            class="form-input"
-            v-model="editPlaylist.name"
-            placeholder="Enter playlist name"
-            autocomplete="off"
-          />
-        </div>
-        <div class="form-actions">
-          <button class="btn btn-submit">Create Playlist</button>
-          <button class="btn btn-cancel" v-on:click="cancelForm" type="button">Cancel</button>
-        </div>
-      </form>
-    </div>
-    <div>
-      <button class="btn btn-find" v-on:click="displaySavedPlaylists()" type="button">Find Playlist</button>
-    </div>
-    <div v-if="showSavedPlaylists">
-      <div class="event-tiles">
-        <div v-for="playlist in savedPlaylists" :key="playlist.id" class="event-tile">
-          <h3 class="event-title">{{ playlist.name }}</h3>
-          <div class="event-buttons">
-            <button class="btn-view-details" @click="addPlaylistToEvent(playlist.playlistId)">Add Playlist to Event</button>
+      <div v-if="showSavedPlaylists">
+        <h4>Select a saved playlist to add to this event.</h4>
+        <div class="playlist-tiles">
+          <div v-for="playlist in savedPlaylists" :key="playlist.id" class="playlist-tile">
+            <h3 class="playlist-title">{{ playlist.name }}</h3>
+            <div class="playlist-buttons">
+              <button class="btn-view-details" @click="addPlaylistToEvent(playlist.playlistId)">Add Playlist to Event</button>
+            </div>
           </div>
         </div>
-      </div>
+      </div> 
+      <div class="qr-code-container">
+        <div v-if="showQRCode" class="qr-code">
+          <img :src="qrCode" alt="Event QR Code" class="qr-image" />
+          <button @click="downloadQRCode" class="btn-download-qr">Download QR Code</button>
+        </div>
+      </div>           
     </div>
+    
+    
 
-    <div class="qr-code-container">
-      <button @click="toggleQRCode" class="btn-qr-code">
-        Show QR Code
-      </button>
-      <div v-if="showQRCode" class="qr-code">
-        <img :src="qrCode" alt="Event QR Code" class="qr-image" />
-        <button @click="downloadQRCode" class="btn-download-qr">Download QR Code</button>
-      </div>
-    </div>
+
+
+    
   </div>
 </template>
 <script>
@@ -287,6 +289,21 @@ export default {
 };
 </script>
 <style scoped>
+.button-holder{
+  display: flex;
+  flex-direction:row;
+  justify-content: space-around;
+  align-items: baseline;
+  margin-right: 10%;
+  margin-left: 10%;
+}
+.event-heading {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+}
 .event-container {
   text-align: center;
   font-size: 2rem;
@@ -364,11 +381,11 @@ export default {
   width: 320px;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
-.playlist-tile:hover {
+/* .playlist-tile:hover {
   transform: scale(1.1) rotate(5deg);
   box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.4);
   background: linear-gradient(145deg, #F39C12, #C0392B);
-}
+} */
 .playlist-tile h4 {
   margin: 0;
   font-size: 2.5rem;
@@ -377,8 +394,12 @@ export default {
   font-size: 1.8rem;
   color: #555;
 }
+.playlist-name {
+  width:50%;
+}
 .btn-create-playlist {
-  background-color: #3498DB;
+  /*background-color: #8E44AD;*/
+  background-color: #C809BE;
   color: white;
   padding: 15px 30px;
   border-radius: 10px;
@@ -388,9 +409,9 @@ export default {
   margin-top: 20px;
 }
 .btn-create-playlist:hover {
-  background-color: #2980B9;
+  background-color: #4F033A;
   transform: scale(1.1);
-  box-shadow: 0 0 15px #2980B9;
+  box-shadow: 0 0 15px white;
 }
 .btn-view-playlist {
   background-color: #E74C3C;
@@ -440,5 +461,14 @@ export default {
 .btn-download-qr:hover {
   background-color: #27AE60;
   transform: scale(1.1);
+}
+.btn-find {
+  padding: 20px;
+  margin: 15px;
+  height: 30px;
+  width: 250px;
+  color:white;
+  background-color: #8E44AD;
+
 }
 </style>

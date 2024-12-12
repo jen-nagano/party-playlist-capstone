@@ -1,20 +1,22 @@
 <template>
   <div class="event-container">
 
+
     <div>
       <!-- Display Event Details -->
       <div v-if="!isEditing" class="event-heading">
-        <router-link to="/home" class="btn-back">Back to Home</router-link>
+        <button class="btn-view-playlist"><router-link to="/home" class="btn-back" style="text-decoration: none; color: #59b6aa">Back to Home</router-link></button>
         <h2>{{ event.name }}</h2>
         <p>{{ event.description }}</p>
         <p><strong>Start Time:</strong> {{ event.startTime }}</p>
         <p><strong>End Time:</strong> {{ event.endTime }}</p>
         <p><strong>Date:</strong> {{ event.date }}</p>
-        <button @click="editEvent">Edit Event</button>
+        <button @click="editEvent" class="btn-view-playlist">Edit Event</button>
       </div>
       <!-- Show Edit Form -->
       <EditEvent v-if="isEditing" :event="event" @save-event="saveEvent" @cancel-edit="cancelEdit" @close-edit="isEditing = false"/>
     </div>
+
 
     <h3>Playlists</h3>
     <div class="playlist-tiles">
@@ -30,6 +32,7 @@
         <button @click="removePlaylist(playlist.playlistId)" class="btn-view-playlist">Remove Playlist</button>
       </div>
       <p v-if="playlists.length === 0">No playlists found for this event.</p>
+
 
     </div>
     <div class="button-holder">
@@ -68,26 +71,30 @@
             </div>
           </div>
         </div>
-      </div> 
+      </div>
       <div class="qr-code-container">
         <div v-if="showQRCode" class="qr-code">
           <img :src="qrCode" alt="Event QR Code" class="qr-image" />
           <button @click="downloadQRCode" class="btn-download-qr">Download QR Code</button>
         </div>
-      </div>           
+      </div>          
     </div>
-    
-    
+   
+   
 
 
 
-    
+
+
+
+   
   </div>
 </template>
 <script>
 import axios from 'axios';
 import EventService from '../services/EventService';
 import EditEvent from '../components/EditEvent.vue';
+
 
 export default {
   components: {
@@ -232,6 +239,7 @@ export default {
         // Make the POST request to link the playlist to the event
         const response = await axios.post(`http://localhost:9000/events/${eventId}/playlists/${playlistId}`);
 
+
         // Check the response status and handle success
         if (response.status === 201) {
           console.log('Playlist linked successfully:', response.data);
@@ -265,6 +273,8 @@ export default {
         const response = await axios.put(`/events/${eventId}`, updatedEvent);
 
 
+
+
         if (response.status === 204) {
           // Successfully updated the event in the database
           this.$emit('save-event', updatedEvent);  // Pass the updated event back to the parent component
@@ -284,6 +294,7 @@ export default {
       this.event = { ...originalEvent }; // Revert to original event data
       this.isEditing = false;  // Exit edit mode
     },
+
 
   }
 };
@@ -399,7 +410,7 @@ export default {
 }
 .btn-create-playlist {
   /*background-color: #8E44AD;*/
-  background-color: #C809BE;
+  background-color: #8E44AD;
   color: white;
   padding: 15px 30px;
   border-radius: 10px;
@@ -414,18 +425,17 @@ export default {
   box-shadow: 0 0 15px white;
 }
 .btn-view-playlist {
-  background-color: #E74C3C;
-  color: white;
-  padding: 12px 25px;
-  border-radius: 5px;
+  background-color: rgb(14, 13, 13);
+  color: #59b6aa;
+  border: 2px solid #59b6aa;
+  padding: 18px 28px; /* 45% bigger */
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 2rem;
-  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 .btn-view-playlist:hover {
-  background-color: #C0392B;
-  transform: scale(1.1);
-  box-shadow: 0 0 15px #C0392B;
+  background-color: #8E44AD;
+  color: white;
 }
 .btn-qr-code {
   background-color: #F39C12;
@@ -469,6 +479,7 @@ export default {
   width: 250px;
   color:white;
   background-color: #8E44AD;
+
 
 }
 </style>

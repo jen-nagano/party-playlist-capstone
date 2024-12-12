@@ -57,51 +57,59 @@
   };
   </script>
 
-<style scoped>
+<<style scoped>
+
+/*sample styles */
 .event-form {
-  background: #2C2C54;
+  background: #333; /* Dark grey background */
   padding: 2rem;
   border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
 }
+
 .form-group {
   margin-bottom: 1.5rem;
 }
+
 label {
   display: block;
   font-size: 1.2rem;
   font-weight: bold;
-  color: #FFFFFF;
+  color: #fff; /* White text */
   margin-bottom: 0.5rem;
 }
+
 .form-control {
   width: 100%;
   padding: 0.5rem;
   font-size: 1rem;
-  border: 2px solid #F39C12;
+  border: 2px solid #aaa; /* Light grey border */
   border-radius: 5px;
-  background: #1E272E;
-  color: #FFFFFF;
+  background: #222; /* Dark background for input */
+  color: #fff; /* White text */
   outline: none;
   box-sizing: border-box;
 }
+
 .form-control:focus {
-  border-color: #F1C40F;
-  box-shadow: 0 0 5px #F1C40F;
+  border-color: rgb(255, 105, 180, 0.9); /* Purple focus border */
+  box-shadow: 0 0 5px rgb(255, 105, 180, 0.9); /* Purple focus shadow */
 }
+
 .date-input::-webkit-calendar-picker-indicator,
 .time-input::-webkit-calendar-picker-indicator {
   background-color: white;
   border-radius: 50%;
   padding: 5px;
 }
+
 .form-buttons {
   display: flex;
   justify-content: space-between;
 }
+
 .btn {
   font-size: 1rem;
   padding: 0.7rem 1.5rem;
@@ -109,19 +117,27 @@ label {
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.3s ease;
+  background: rgb(255, 105, 180, 0.9); /* Purple background */
+  color: #fff; /* White text */
 }
+
+.btn:hover {
+  background: #8e44ad; /* Darker purple on hover */
+}
+
 .btn-submit {
-  background: #28A745;
-  color: #FFFFFF;
+  background: rgb(255, 105, 180, 0.9); /* Default purple for submit */
 }
+
 .btn-submit:hover {
-  background: #218838;
+  background: #8e44ad; /* Darker purple for submit on hover */
 }
+
 .btn-cancel {
-  background: #DC3545;
-  color: #FFFFFF;
+  background: #af7ac5; /* Lighter purple for cancel */
 }
+
 .btn-cancel:hover {
-  background: #C82333;
+  background: rgb(255, 105, 180, 0.9); /* Darker purple for cancel on hover */
 }
 </style>

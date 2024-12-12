@@ -260,7 +260,7 @@ export default {
   font-size: 3rem;
   font-weight: bold;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-  color: #8E44AD;
+  color: rgb(255, 105, 180, 0.9);
 }
 .content {
   text-align: center;
@@ -269,7 +269,7 @@ export default {
 .welcome-message {
   font-size: 3rem;
   font-weight: bold;
-  color: #8E44AD;
+  color: rgb(255, 105, 180, 0.9);
   margin-top: 20px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -294,8 +294,8 @@ export default {
 }
 .btn-create-event {
   display: inline-block;
-  /*background-color: #9B59B6 ;*/
-  background: linear-gradient(45deg, #9B59B6, #120916);
+  /*background-color: rgb(255, 105, 180, 0.9) ;*/
+  background: linear-gradient(45deg, rgb(255, 105, 180, 0.9), #120916);
   color: white;
   padding: 20px 40px;
   border-radius: 10px;
@@ -322,7 +322,7 @@ export default {
   justify-content: center;
 }
 .event-tile {
-  background: linear-gradient(45deg, #9B59B6, #0A050C);
+  background: linear-gradient(45deg, rgb(255, 105, 180, 0.9), #0A050C);
   color: white;
   padding: 30px;
   border-radius: 15px;
@@ -351,15 +351,15 @@ export default {
 .btn-view-details,
 .btn-remove-event {
   background-color: rgb(14, 13, 13);
-  color: #9B59B6;
-  border: 2px solid #9B59B6;
+  color: rgb(255, 105, 180, 0.9);
+  border: 2px solid rgb(255, 105, 180, 0.9);
   padding: 18px 28px; /* 45% bigger */
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 .btn-view-details:hover {
-  background-color: #8E44AD;
+  background-color: rgb(255, 105, 180, 0.9);
   color: white;
 }
 .btn-remove-event {
@@ -407,8 +407,8 @@ export default {
 
 .form-input:focus {
   outline: none;
-  border-color: #9B59B6; /* Purple border on focus */
-  box-shadow: 0px 0px 8px rgba(155, 89, 182, 0.8); /* Purple shadow on focus */
+  border-color: rgb(255, 105, 180, 0.9); /* Purple border on focus */
+  box-shadow: 0px 0px 8px rgb(255, 105, 180, 0.6); /* Purple shadow on focus */
 }
 
 .form-actions {
@@ -426,24 +426,24 @@ export default {
 }
 
 .btn:hover {
-  background: #8e44ad; /* Darker purple on hover */
+  background: rgb(255, 105, 180, 0.6); /* Darker purple on hover */
 }
 
 .btn-submit {
-  background: #9B59B6; /* Purple background */
+  background: rgb(255, 105, 180, 0.9); /* Purple background */
   color: #fff; /* White text */
 }
 
 .btn-submit:hover {
-  background: #8e44ad; /* Darker purple for submit on hover */
+  background: rgb(255, 105, 180, 0.6); /* Darker purple for submit on hover */
 }
 
 .btn-cancel {
-  background: #af7ac5; /* Lighter purple for cancel */
+  background: rgb(255, 105, 180, 0.9); /* Lighter purple for cancel */
   color: #fff; /* White text */
 }
 
 .btn-cancel:hover {
-  background: #9b59b6; /* Darker purple for cancel on hover */
+  background: rgb(255, 105, 180, 0.6); /* Darker purple for cancel on hover */
 }
 </style>

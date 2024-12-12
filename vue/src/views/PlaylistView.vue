@@ -217,9 +217,13 @@ export default {
   gap: 20px;
   flex-wrap: wrap; /* Allow wrapping on smaller screens */
   justify-content: space-between;
+  margin-left: 50px;
+}
+.drag-handle{
+  font-size: x-large;
 }
 .playlist-container {
-  flex: 0 0 60%; /* 60% width for playlist section */
+  flex: 0 0 50%; /* 60% width for playlist section */
 }
 .playlist-name {
   text-align: center;
@@ -238,14 +242,14 @@ export default {
   text-align: center;
 }
 .back-button:hover {
-  background-color: #f0ff1bf1;
+  background-color: rgba(71, 241, 219, 0.808);
   color: black;
 }
 .search-section {
-  flex: 0 0 35%; /* 35% width for search section */
+  flex: 0 0 40%; /* 35% width for search section */
   background-color: #00000000;
-  border-radius: 8px;
-  padding: 16px;
+  border-radius: 1px;
+  padding: 36px;
 }
 .songs-list {
   margin-top: 20px;
@@ -254,7 +258,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 8px;
+  padding: 28px;
   margin-bottom: 8px;
   background-color: #070707;
   border-radius: 8px;
@@ -278,7 +282,7 @@ button {
   /* box-shadow: 0 4px 6px rgba(254, 255, 255, 0.808); */
 }
 button:hover {
-  background-color: #f0ff1bf1;
+  background-color: rgba(71, 241, 219, 0.808);
   color: black;
 }
 @media (max-width: 768px) {
@@ -290,4 +294,3 @@ button:hover {
   }
 }
 </style>
-

@@ -58,8 +58,6 @@ export default {
 </script>
 <style scoped>
 
-
-
 /*sample styles */
 .event-form {
   background: #333; /* Dark grey background */
@@ -95,8 +93,8 @@ label {
 }
 
 .form-control:focus {
-  border-color: #9B59B6; /* Purple focus border */
-  box-shadow: 0 0 5px #9B59B6; /* Purple focus shadow */
+  border-color: rgb(255, 105, 180, 0.9); /* Purple focus border */
+  box-shadow: 0 0 5px rgb(255, 105, 180, 0.9); /* Purple focus shadow */
 }
 
 .date-input::-webkit-calendar-picker-indicator,
@@ -118,27 +116,27 @@ label {
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: #9B59B6; /* Purple background */
+  background: rgb(255, 105, 180, 0.9); /* Purple background */
   color: #fff; /* White text */
 }
 
 .btn:hover {
-  background: #8e44ad; /* Darker purple on hover */
+  background: rgb(255, 105, 180, 0.7); /* Darker purple on hover */
 }
 
 .btn-submit {
-  background: #9B59B6; /* Default purple for submit */
+  background: rgb(255, 105, 180, 0.9); /* Default purple for submit */
 }
 
 .btn-submit:hover {
-  background: #8e44ad; /* Darker purple for submit on hover */
+  background: rgb(255, 105, 180, 0.7); /* Darker purple for submit on hover */
 }
 
 .btn-cancel {
-  background: #af7ac5; /* Lighter purple for cancel */
+  background: rgb(255, 105, 180, 0.9); /* Lighter purple for cancel */
 }
 
 .btn-cancel:hover {
-  background: #9b59b6; /* Darker purple for cancel on hover */
+  background: rgb(255, 105, 180, 0.7); /* Darker purple for cancel on hover */
 }
 </style>

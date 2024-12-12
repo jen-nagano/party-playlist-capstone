@@ -1,10 +1,20 @@
 <template>
   <div class="event-container">
-    <h2>{{ event.name }}</h2>
-    <p>{{ event.description }}</p>
-    <p><strong>Start Time:</strong> {{ event.startTime }}</p>
-    <p><strong>End Time:</strong> {{ event.endTime }}</p>
-    <p><strong>Date:</strong> {{ event.date }}</p>
+
+    <div>
+      <!-- Display Event Details -->
+      <div v-if="!isEditing">
+        <h2>{{ event.name }}</h2>
+        <p>{{ event.description }}</p>
+        <p><strong>Start Time:</strong> {{ event.startTime }}</p>
+        <p><strong>End Time:</strong> {{ event.endTime }}</p>
+        <p><strong>Date:</strong> {{ event.date }}</p>
+        <button @click="editEvent">Edit Event</button>
+      </div>
+      <!-- Show Edit Form -->
+      <EditEvent v-if="isEditing" :event="event" @save-event="saveEvent" @cancel-edit="cancelEdit" @close-edit="isEditing = false"/>
+    </div>
+
     <h3>Playlists</h3>
     <router-link to="/home" class="btn-back">Back to Home</router-link>
     <div class="playlist-tiles">
@@ -60,7 +70,12 @@
 <script>
 import axios from 'axios';
 import EventService from '../services/EventService';
+import EditEvent from '../components/EditEvent.vue';
+
 export default {
+  components: {
+    EditEvent
+  },
   data() {
     return {
       event: {},
@@ -71,7 +86,8 @@ export default {
       editPlaylist: {
         name: '',
         userId: this.$store.state.user.id
-      }
+      },
+      isEditing: false,
     };
   },
   created() {
@@ -169,7 +185,41 @@ export default {
           alert('An error occurred while trying to remove the event from the playlist. Please try again.');
         }
       }
-    }
+    },
+    // Show the edit form
+    editEvent() {
+      this.isEditing = true;
+    },
+    // Save the edited event
+    async saveEvent(updatedEvent) {
+      updatedEvent.creator = this.$store.state.user.id;
+      //updatedEvent.date = updatedEvent.date.toISOString().split('T')[0];
+      console.log(updatedEvent);
+      try {
+        const eventId = this.$route.params.eventId;  // Get the event ID from the route
+        const response = await axios.put(`/events/${eventId}`, updatedEvent);
+
+
+        if (response.status === 204) {
+          // Successfully updated the event in the database
+          this.$emit('save-event', updatedEvent);  // Pass the updated event back to the parent component
+          //alert('Event updated successfully!');
+          this.$router.push({ name: 'EventView', params: { eventId: eventId } });  // Redirect to the event view page
+          await this.fetchEventDetails();
+        } else {
+          alert('Failed to update event.');
+        }
+      } catch (error) {
+        console.error('Error updating event:', error);
+        alert('An error occurred while updating the event. Please try again.');
+      }
+    },
+    // Reset the form if cancel is clicked
+    cancelEdit(originalEvent) {
+      this.event = { ...originalEvent }; // Revert to original event data
+      this.isEditing = false;  // Exit edit mode
+    },
+
   }
 };
 </script>

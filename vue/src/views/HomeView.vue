@@ -5,7 +5,7 @@
     </div>
     <div class="content">
       <p class="welcome-message">Welcome to the Panda Party!</p>
-      <h2 class="event-list-header">The events you are hosting:</h2>
+      <h2 class="event-list-header">Events:</h2>
       <div v-if="events.length === 0">You are not hosting any events.</div>
       <!-- Add Event Button and Form -->
       <div v-if="!showEvent">
@@ -30,7 +30,7 @@
           </div>
         </div>
       </div>
-      <h2 class="event-list-header">The events you are invited to:</h2>
+      <!-- <h2 class="event-list-header">The events you are invited to:</h2>
       <div v-if="guestEvents.length === 0">You are not attending any events.</div>
       <div class="event-tiles">
         <div v-for="event in guestEvents" :key="event.id" class="event-tile">
@@ -40,9 +40,34 @@
             <button class="btn-view-details" @click="viewEvent(event.id)">View Details</button>
           </div>
         </div>
-      </div>
-      <h2 class="event-list-header">Saved Playlists:</h2>
+      </div> -->
+      <h2 class="event-list-header">Playlists:</h2>
       <div v-if="savedPlaylists.length === 0">You do not have any saved playlists.</div>
+      <div>
+        <button class="btn-create-event" v-on:click="this.showPlaylist = true">
+          <span class="plus-sign">+</span> Add Playlist
+        </button>
+      </div>
+                <!-- Create Playlist Form -->
+    <div class="show_playlist" v-if="showPlaylist">
+      <form v-on:submit.prevent="submitForm" class="playlistForm">
+        <div class="form-group">
+          <label for="playlist-name" class="form-label">Choose a name for your playlist:</label>
+          <input
+            id="playlist-name"
+            type="text"
+            class="form-input"
+            v-model="editPlaylist.name"
+            placeholder="Enter playlist name"
+            autocomplete="off"
+          />
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-submit">Create Playlist</button>
+          <button class="btn btn-cancel" v-on:click="cancelForm" type="button">Cancel</button>
+        </div>
+      </form>
+    </div>
       <div class="event-tiles">
         <div v-for="playlist in savedPlaylists" :key="playlist.id" class="event-tile">
           <h3 class="event-title">{{ playlist.name }}</h3>
@@ -52,12 +77,35 @@
           </div>
         </div>
       </div>
+
+          <!-- Create Playlist Form -->
+    <div class="show_playlist" v-if="showPlaylist">
+      <form v-on:submit.prevent="submitForm" class="playlistForm">
+        <div class="form-group">
+          <label for="playlist-name" class="form-label">Choose a name for your playlist:</label>
+          <input
+            id="playlist-name"
+            type="text"
+            class="form-input"
+            v-model="editPlaylist.name"
+            placeholder="Enter playlist name"
+            autocomplete="off"
+          />
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-submit">Create Playlist</button>
+          <button class="btn btn-cancel" v-on:click="cancelForm" type="button">Cancel</button>
+        </div>
+      </form>
+    </div>
     </div>
   </div>
 </template>
 <script>
 import EventForm from '../components/EventForm.vue';
 import axios from 'axios';
+import EventService from '../services/EventService';
+
 export default {
   components: {
     EventForm
@@ -65,9 +113,14 @@ export default {
   data() {
     return {
       showEvent: false,
+      showPlaylist: false,
       events: [],
       guestEvents: [],
-      savedPlaylists: []
+      savedPlaylists: [],
+      editPlaylist: {
+        name: '',
+        userId: this.$store.state.user.id
+      },
     };
   },
   created() {
@@ -175,6 +228,39 @@ export default {
         }
       }
 
+    },
+    submitForm() {
+      if (this.editPlaylist.name === '') {
+        return;
+      }
+      EventService
+        .addPlaylist(this.editPlaylist)
+        .then(response => {
+          if (response.status === 201) {
+            console.log(response.data);
+            this.savePlaylist(response.data.playlistId);
+            this.$router.push({ name: 'PlaylistView', params: { playlistId: response.data.playlistId, eventId: 0 } });
+          }
+        })
+        .catch(error => {
+          console.error('Error adding playlist:', error);
+        });
+      this.showPlaylist = false;
+    },
+    savePlaylist(playlistId) {
+      EventService
+        .savePlaylist(this.$store.state.user.id, playlistId)
+        .then(response => {
+          if (response.status === 201) {
+            console.log(response.data);
+          }
+        })
+        .catch(error => {
+          console.error('Error saving playlist:', error);
+        });
+    },
+    cancelForm() {
+      this.showPlaylist = false;
     },
   }
 };

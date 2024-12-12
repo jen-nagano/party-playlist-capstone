@@ -202,7 +202,7 @@ export default {
       }
     },
     navigateBack() {
-      if (this.eventId === 0) {
+      if (this.eventId == 0) {
         this.$router.push({ name: "home" });
       } else {
         this.$router.push({ name: "EventView", params: { playlistId: this.playlist.playlistId, eventId: this.eventId } });

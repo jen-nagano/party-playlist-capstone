@@ -18,6 +18,10 @@ export default {
     return http.post(`events/${eventId}/playlists`, playlist);
   },
 
+  addPlaylist(playlist ) {
+    return http.post(`/playlists`, playlist);
+  },
+
   addSongToPlaylist(song, playlistId) {
     return http.post(`playlists/${playlistId}/songs`, song);
   },

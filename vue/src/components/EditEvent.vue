@@ -57,7 +57,7 @@
   };
   </script>
 
-<<style scoped>
+<style scoped>
 
 /*sample styles */
 .event-form {

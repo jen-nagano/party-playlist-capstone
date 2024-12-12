@@ -1,24 +1,22 @@
 <template>
   <div class="event-container">
-
-
     <div>
       <!-- Display Event Details -->
       <div v-if="!isEditing" class="event-heading">
-        <button class="btn-view-playlist"><router-link to="/home" class="btn-back" style="text-decoration: none; color: #59b6aa">Back to Home</router-link></button>
+        <button class="btn-view-playlist-nav"><router-link to="/home" class="btn-back" id="back-home" style="text-decoration: none">Back to Home</router-link></button>
         <h2>{{ event.name }}</h2>
         <p>{{ event.description }}</p>
         <p><strong>Start Time:</strong> {{ event.startTime }}</p>
         <p><strong>End Time:</strong> {{ event.endTime }}</p>
         <p><strong>Date:</strong> {{ event.date }}</p>
-        <button @click="editEvent" class="btn-view-playlist">Edit Event</button>
+        <button @click="editEvent" class="btn-view-playlist-nav">Edit Event</button>
       </div>
       <!-- Show Edit Form -->
       <EditEvent v-if="isEditing" :event="event" @save-event="saveEvent" @cancel-edit="cancelEdit" @close-edit="isEditing = false"/>
     </div>
 
 
-    <h3>Playlists</h3>
+    <h3>Playlists for {{ event.name }}</h3>
     <div class="playlist-tiles">
       <div
         v-for="playlist in playlists"
@@ -384,7 +382,7 @@ export default {
   justify-content: center;
 }
 .playlist-tile {
-  background: linear-gradient(145deg, #8E44AD, #0E0101);
+  background: linear-gradient(145deg,  rgb(255, 105, 180, 0.9), #0E0101);
   border: 2px solid #ddd;
   padding: 25px;
   border-radius: 10px;
@@ -410,7 +408,8 @@ export default {
 }
 .btn-create-playlist {
   /*background-color: #8E44AD;*/
-  background-color: #8E44AD;
+  background: linear-gradient(45deg, rgb(255, 105, 180, 0.9), #0A050C);
+  box-shadow: 0 6px 12px rgb(255, 255, 255);
   color: white;
   padding: 15px 30px;
   border-radius: 10px;
@@ -419,6 +418,8 @@ export default {
   transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
   margin-top: 20px;
 }
+
+ 
 .btn-create-playlist:hover {
   background-color: #4F033A;
   transform: scale(1.1);
@@ -426,16 +427,46 @@ export default {
 }
 .btn-view-playlist {
   background-color: rgb(14, 13, 13);
-  color: #59b6aa;
-  border: 2px solid #59b6aa;
+  color: rgb(255, 105, 180, 0.9);
+  border: 2px solid rgb(255, 105, 180, 0.9);
   padding: 18px 28px; /* 45% bigger */
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
+  /*display: flex;
+  flex-direction: column;
+  
+  justify-content: center;*/
+  width: 100%;
+  text-align: center;
 }
 .btn-view-playlist:hover {
-  background-color: #8E44AD;
+  background-color:  rgb(255, 105, 180, 0.9);
   color: white;
+}
+.btn-view-playlist-nav {
+  background-color: rgb(14, 13, 13);
+  color: rgb(255, 105, 180, 0.9);
+  border: 2px solid rgb(255, 105, 180, 0.9);
+  padding: 18px 28px; /* 45% bigger */
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  
+  justify-content: center;
+}
+.btn-view-playlist-nav:hover {
+  background-color:  rgb(255, 105, 180, 0.9);
+  color: white;
+}
+
+#back-home {
+  color: rgb(255, 105, 180, 0.9)
+}
+#back-home:hover {
+  color: white
 }
 .btn-qr-code {
   background-color: #F39C12;

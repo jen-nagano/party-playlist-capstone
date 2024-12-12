@@ -12,5 +12,6 @@ public interface EventDao {
     void deleteEventForUser(int userId, int eventId);
     void removeEventFromPlaylist(int playlistId, int eventId);
     void updateEvent(int eventId, Event event);
+    void linkPlaylistToEvent(int playlistId, int eventId);
 
 }

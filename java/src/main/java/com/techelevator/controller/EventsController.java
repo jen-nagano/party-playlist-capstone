@@ -131,6 +131,16 @@ public class EventsController {
         }
     }
 
+    @RequestMapping(path = "/events/{eventId}/playlists/{playlistId}", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void linkPlaylistToEvent(@PathVariable int eventId, @PathVariable int playlistId) {
+        try {
+            eventDao.linkPlaylistToEvent(playlistId, eventId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to link playlist to event", e);
+        }
+    }
+
     @PostMapping("/test-events")
     public Event testEventParsing(@RequestBody Event event) {
         System.out.println("Parsed event: " + event);

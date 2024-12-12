@@ -1,10 +1,10 @@
 <template>
   <div class="home">
-    <div class="banner">
+    <!-- <div class="banner">
       <h1 class="banner-title"></h1>
-    </div>
+    </div> -->
     <div class="content">
-      <p class="welcome-message">Welcome to the Panda Party!</p>
+      <!-- <p class="welcome-message">Welcome to the Panda Party!</p> -->
       <h2 class="event-list-header">Events:</h2>
       <div v-if="events.length === 0">You are not hosting any events.</div>
       <!-- Add Event Button and Form -->

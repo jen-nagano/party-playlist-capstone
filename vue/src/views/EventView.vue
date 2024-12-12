@@ -34,6 +34,7 @@
         <button class="btn-create-playlist" v-on:click="this.showPlaylist = true">
           Create Playlist
         </button>
+
       </div>
     </div>
     <!-- Create Playlist Form -->
@@ -56,6 +57,20 @@
         </div>
       </form>
     </div>
+    <div>
+      <button class="btn btn-find" v-on:click="displaySavedPlaylists()" type="button">Find Playlist</button>
+    </div>
+    <div v-if="showSavedPlaylists">
+      <div class="event-tiles">
+        <div v-for="playlist in savedPlaylists" :key="playlist.id" class="event-tile">
+          <h3 class="event-title">{{ playlist.name }}</h3>
+          <div class="event-buttons">
+            <button class="btn-view-details" @click="addPlaylistToEvent(playlist.playlistId)">Add Playlist to Event</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="qr-code-container">
       <button @click="toggleQRCode" class="btn-qr-code">
         Show QR Code
@@ -80,7 +95,9 @@ export default {
     return {
       event: {},
       playlists: [],
+      savedPlaylists: [],
       showPlaylist: false,
+      showSavedPlaylists: false,
       showQRCode: false,
       qrCode: '',
       editPlaylist: {
@@ -119,6 +136,23 @@ export default {
         }
       }
     },
+    async fetchSavedPlaylists() {
+      try {
+        const userId = this.$store.state.user?.id;
+        if (!userId) {
+          console.warn("User ID is not defined.");
+          return;
+        }
+        const response = await axios.get(`/users/${userId}/playlists`);
+        this.savedPlaylists = response.data;
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          console.warn("No saved playlists found for this user.");
+        } else {
+          console.error("Error fetching saved playlists:", error);
+        }
+      }
+    },
     viewPlaylist(playlistId) {
       this.$router.push({ name: 'PlaylistView', params: { playlistId: playlistId, eventId: this.$route.params.eventId } });
     },
@@ -133,6 +167,10 @@ export default {
         .catch(error => {
           console.error('Error saving playlist:', error);
         });
+    },
+    displaySavedPlaylists() {
+      this.showSavedPlaylists = true;
+      this.fetchSavedPlaylists();
     },
     submitForm() {
       if (this.editPlaylist.name === '') {
@@ -183,6 +221,31 @@ export default {
         } catch (error) {
           console.error('Failed to remove the event from the playlist:', error);
           alert('An error occurred while trying to remove the event from the playlist. Please try again.');
+        }
+      }
+    },
+    async addPlaylistToEvent(playlistId) {
+      const eventId = this.$route.params.eventId
+      try {
+        // Make the POST request to link the playlist to the event
+        const response = await axios.post(`http://localhost:9000/events/${eventId}/playlists/${playlistId}`);
+
+        // Check the response status and handle success
+        if (response.status === 201) {
+          console.log('Playlist linked successfully:', response.data);
+          this.fetchPlaylists();
+          // Optionally redirect to a different view or take another action
+          // this.$router.push({ name: 'PlaylistView', params: { playlistId: response.data.playlistId } });
+        }
+      } catch (error) {
+        // Handle errors
+        console.error('Error adding playlist:', error);
+        if (error.response) {
+          console.error('Server responded with:', error.response.status, error.response.data);
+        } else if (error.request) {
+          console.error('No response received:', error.request);
+        } else {
+          console.error('Error during setup:', error.message);
         }
       }
     },

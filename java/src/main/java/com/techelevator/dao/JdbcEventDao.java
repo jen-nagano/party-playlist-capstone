@@ -112,6 +112,21 @@ public class JdbcEventDao implements EventDao {
         }
     }
 
+    public void linkPlaylistToEvent(int playlistId, int eventId) {
+        String sql = "INSERT INTO event_playlist (event_id, playlist_id) VALUES (?, ?);";
+
+        try {
+            int rowsAffected = jdbcTemplate.update(sql, eventId, playlistId);
+            if (rowsAffected == 0) {
+                throw new DaoException("Failed to link playlist to event: No rows affected.");
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to the database.", e);
+        } catch (DataAccessException e) {
+            throw new DaoException("Error executing SQL to link playlist to event.", e);
+        }
+    }
+
     public void updateEvent(int eventId, Event event) {
         String sql = "UPDATE event SET name = ?, date = ?, start_time = ?, end_time = ?, creator = ? WHERE event_id = ?";
         //System.out.println(sql);

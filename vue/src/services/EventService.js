@@ -26,6 +26,10 @@ export default {
     return http.post(`playlists/${playlistId}/songs`, song);
   },
 
+  linkPlaylistToEvent(playlistId, eventId) {
+    return http.post(`events/${eventId}/playlists/${playlistId}`);
+  },
+
   savePlaylist(userId, playlistId) {
     return http.post(`/users/${userId}/playlists/${playlistId}`);
   }

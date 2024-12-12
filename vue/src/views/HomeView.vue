@@ -46,8 +46,8 @@
           />
         </div>
         <div class="form-actions">
-          <button class="btn btn-submit">Create Playlist</button>
           <button class="btn btn-cancel" v-on:click="cancelForm" type="button">Cancel</button>
+          <button class="btn btn-submit">Create Playlist</button>
         </div>
       </form>
     </div>
@@ -376,35 +376,74 @@ export default {
 .playlistForm {
   margin: 20px auto;
   padding: 20px;
-  background: #1E1E2F;
+  background: #333; /* Dark grey background */
   border-radius: 10px;
   width: 400px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
   text-align: center;
 }
+
 .form-group {
   margin-bottom: 15px;
 }
+
 .form-label {
   display: block;
   font-size: 1.2rem;
-  color: #fff;
+  color: #fff; /* White text */
   margin-bottom: 10px;
 }
+
 .form-input {
   width: 100%;
   padding: 10px;
   border-radius: 5px;
-  border: 1px solid #ddd;
+  border: 1px solid #aaa; /* Light grey border */
   font-size: 1rem;
+  background: #222; /* Dark background */
+  color: #fff; /* White text */
+  box-sizing: border-box; /* Include padding and border in the width */
 }
+
 .form-input:focus {
   outline: none;
-  border-color: #3498DB;
-  box-shadow: 0px 0px 8px rgba(52, 152, 219, 0.8);
+  border-color: #9B59B6; /* Purple border on focus */
+  box-shadow: 0px 0px 8px rgba(155, 89, 182, 0.8); /* Purple shadow on focus */
 }
+
 .form-actions {
   display: flex;
   justify-content: space-between;
+}
+
+.btn {
+  font-size: 1rem;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background: #8e44ad; /* Darker purple on hover */
+}
+
+.btn-submit {
+  background: #9B59B6; /* Purple background */
+  color: #fff; /* White text */
+}
+
+.btn-submit:hover {
+  background: #8e44ad; /* Darker purple for submit on hover */
+}
+
+.btn-cancel {
+  background: #af7ac5; /* Lighter purple for cancel */
+  color: #fff; /* White text */
+}
+
+.btn-cancel:hover {
+  background: #9b59b6; /* Darker purple for cancel on hover */
 }
 </style>

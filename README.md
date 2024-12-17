@@ -1,5 +1,5 @@
-# Final Capstone
+# Panda Party Playlist
 ​
-This directory contains all of the starter projects for the final capstone.
-​
-Each project contains instructions that provides information about the starting code and explains how to get started with the final capstone project.
+This project was completed as a final capstone project at Tech Elevator.  I collaborated with two other classmates to develop this project using Java Springboot backend with HTML/CSS/Javascript/Vue for the frontend.
+
+It connects with Spotify API to search songs to add to events and playlist.
